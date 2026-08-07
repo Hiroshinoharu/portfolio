@@ -36,7 +36,9 @@ body {
     radial-gradient(circle at 20px 20px, rgba(23, 21, 31, 0.09) 1.5px, transparent 2px),
     linear-gradient(135deg, rgba(69, 199, 216, 0.1), transparent 34%),
     var(--paper);
-  background-size: 18px 18px, 100% 100%;
+  background-size:
+    18px 18px,
+    100% 100%;
 }
 
 button,

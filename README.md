@@ -1,75 +1,202 @@
-# React + TypeScript + Vite
+# Max Ceban Portfolio
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Personal portfolio website built with React, TypeScript, Vite, and CSS. The site presents software, data, and machine learning projects with an anime/cyber-inspired visual style.
 
-Currently, two official plugins are available:
+## Tech Stack
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- React
+- TypeScript
+- Vite
+- Tailwind CSS import support
+- CSS custom properties
+- Inline SVG illustrations
 
-## React Compiler
+## Run Locally
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Install dependencies:
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Start the development server:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+```bash
+npm run dev
 ```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Preview the production build:
+
+```bash
+npm run preview
+```
+
+## Project Structure
+
+```text
+src/
+  App.tsx       Main portfolio content, data arrays, SVG illustrations, and layout
+  App.css       Component-level styling, hero art, project cards, stack cards, socials
+  index.css     Global theme variables, base styles, and page background
+  assets/
+    github-pfp.png
+    max.jpeg
+```
+
+## Main Sections
+
+### Hero
+
+The hero introduces the portfolio with:
+
+- headline and intro copy
+- call-to-action buttons
+- CSS-built anime/cyber banner art
+- animated code-rain background
+- GitHub profile image used as the logo mark
+
+The hero art is built with regular HTML spans and CSS in `src/App.css`, not an image file.
+
+### About
+
+The about section includes:
+
+- short personal introduction
+- real portrait image from `src/assets/max.jpeg`
+- framed image styling with a subtle screen-tone overlay
+
+### Tech Stack
+
+The tech stack section is generated from the `skillGroups` array in `src/App.tsx`.
+
+Groups currently include:
+
+- Languages
+- Frameworks
+- Data & ML
+- Tools
+
+Each item uses the shared `tech-chip` style and a small inline SVG badge.
+
+### Projects
+
+Project cards are generated from the `projects` array in `src/App.tsx`.
+
+Current projects:
+
+- NextPlay
+- CNN From Scratch
+- MoMA Art Catalogue
+- CKAN ETL Pipeline
+
+Each card includes:
+
+- year
+- category
+- description
+- custom SVG illustration
+- stack badges
+
+Project poster SVGs are rendered by `ProjectIllustration()` in `src/App.tsx`.
+
+### Contact
+
+The contact section includes:
+
+- short availability copy
+- social/contact panels for LinkedIn, GitHub, NextPlay, and email
+- inline SVG icons for each panel
+
+Social links are controlled by the `socials` array in `src/App.tsx`.
+
+## Editing Content
+
+Most content is data-driven in `src/App.tsx`.
+
+Update projects:
+
+```ts
+const projects = [
+  {
+    year: '2026',
+    title: 'NextPlay',
+    category: 'ML recommender',
+    description: '...',
+    stack: ['React', 'Vite', 'Go'],
+  },
+]
+```
+
+Update tech stack:
+
+```ts
+const skillGroups = [
+  {
+    title: 'Languages',
+    items: ['Python', 'Go', 'Java'],
+  },
+]
+```
+
+Update social links:
+
+```ts
+const socials = [
+  {
+    label: 'GitHub',
+    href: 'https://github.com/Hiroshinoharu/',
+    className: 'social-github',
+    icon: '...',
+  },
+]
+```
+
+## Styling Notes
+
+Global theme colors live in `src/index.css`:
+
+```css
+:root {
+  --paper: #f7f4ec;
+  --ink: #17151f;
+  --muted: #676271;
+  --red: #e94b5f;
+  --cyan: #45c7d8;
+  --soft: #fffaf0;
+  --panel: #ffffff;
+}
+```
+
+Changing these variables updates most of the site palette.
+
+The visual style uses:
+
+- thick ink borders
+- red/cyan accents
+- cream paper background
+- SVG-style project illustrations
+- CSS-drawn hero character
+- compact tech/social badges
+
+## Assets
+
+- `src/assets/github-pfp.png` is used for the top-left logo.
+- `src/assets/max.jpeg` is used in the About section.
+
+If replacing either image, keep the same filename or update the import in `src/App.tsx`.
+
+## Validation
+
+Use this command before committing or deploying:
+
+```bash
+npm run build
+```
+
+This runs the TypeScript build and Vite production build.
