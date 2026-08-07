@@ -1,37 +1,39 @@
 import './App.css'
+import githubPfp from './assets/github-pfp.png'
 
 const projects = [
   {
     year: '2026',
-    title: 'Signal Studio',
-    category: 'Brand system',
+    title: 'Neon Frame',
+    category: 'Portfolio UI',
     description:
-      'A visual identity for a small creative studio, built around expressive lettering, repeatable marks, and warm editorial layouts.',
+      'A focused personal site concept using cinematic panels, confident typography, and subtle manga-inspired motion cues.',
   },
   {
     year: '2025',
-    title: 'Patch Notes',
+    title: 'Episode Log',
     category: 'Web design',
     description:
-      'A compact landing page concept for a product journal with tight typography, modular sections, and hand-drawn interface details.',
+      'A compact journal layout with episode-card navigation, restrained accent color, and a clear reading hierarchy.',
   },
   {
     year: '2025',
-    title: 'Tiny Archive',
-    category: 'Illustration',
+    title: 'Line Study',
+    category: 'Visual system',
     description:
-      'A set of poster-style illustrations exploring desktop objects, personal collections, and monochrome line work.',
+      'A monochrome illustration direction exploring character silhouettes, screen tones, and polished UI details.',
   },
 ]
 
-const services = ['Web Design', 'Visual Identity', 'Illustration', 'Frontend UI']
+const services = ['Software Engineering', 'Data Analysis', 'AI Enthusiast', 'Gamer']
+const codeRainColumns = Array.from({ length: 18 }, (_, index) => index)
 
 function App() {
   return (
     <main className="site-shell">
       <header className="topbar" aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="Max Ceban home">
-          MC
+          <img src={githubPfp} alt="Max Ceban logo" />
         </a>
         <nav>
           <a href="#work">Work</a>
@@ -42,12 +44,10 @@ function App() {
 
       <section className="hero" id="top">
         <div className="hero-copy">
-          <p className="eyebrow">Portfolio / Web Design / Illustration</p>
+          <p className="eyebrow">Software Development / Data Analytics / Problem Solving</p>
           <h1>Max Ceban</h1>
           <p className="intro">
-            A playful portfolio concept for learning layout, type, and visual
-            direction through crisp interface design and hand-drawn studio
-            energy.
+            An aspiring software and data professional passionate about building useful applications, analysing data and continuously learning new technologies.
           </p>
           <div className="hero-actions">
             <a className="button primary" href="#work">
@@ -59,34 +59,40 @@ function App() {
           </div>
         </div>
 
-        <div className="hero-art" aria-label="Illustrated desk scene">
-          <div className="sunburst" />
-          <div className="monitor">
-            <span />
-            <strong>PORT</strong>
-          </div>
-          <div className="tablet">
-            <span />
-            <span />
-            <span />
-          </div>
-          <div className="character">
-            <div className="head">
-              <span className="ear left" />
-              <span className="ear right" />
-              <span className="eye left" />
-              <span className="eye right" />
-              <span className="nose" />
-              <span className="mouth" />
+        <div className="hero-art" aria-label="Anime-inspired portfolio panel">
+          <div className="panel panel-large">
+            <div className="code-rain" aria-hidden="true">
+              {codeRainColumns.map((column) => (
+                <span key={column} />
+              ))}
             </div>
-            <div className="body" />
+            <span className="speedline one" />
+            <span className="speedline two" />
+            <span className="speedline three" />
+            <div className="banner-man" aria-hidden="true">
+              <span className="energy-blade" />
+              <span className="man-head">
+                <span className="visor" />
+                <span className="headset" />
+                <span className="man-eye left" />
+                <span className="man-eye right" />
+                <span className="man-mouth" />
+              </span>
+              <span className="man-arm left" />
+              <span className="man-arm right" />
+              <span className="man-body" />
+            </div>
+            <strong>UI</strong>
           </div>
-          <div className="plant">
+          <div className="panel panel-small">
+            <span>01</span>
+            <strong>DESIGN</strong>
+          </div>
+          <div className="panel panel-strip">
             <span />
             <span />
             <span />
           </div>
-          <div className="cable" />
         </div>
       </section>
 
@@ -99,19 +105,18 @@ function App() {
       <section className="section split" id="about">
         <div>
           <p className="eyebrow">Hello</p>
-          <h2>Designing sites with a sketchbook mindset.</h2>
+          <h2>Designing interfaces with character and restraint.</h2>
         </div>
         <div className="about-copy">
           <p>
-            This page is shaped by retro portfolio covers, bold display type,
-            cream paper, red ink, and black-and-white illustration. It keeps the
-            structure practical: a clear intro, selected work, an about note,
-            and a contact area.
+            This version borrows from anime layouts without turning the site
+            into fan art: panel framing, screen-tone texture, sharp angles, and
+            a limited palette keep it expressive but still portfolio-ready.
           </p>
           <p>
-            Use it as a learning base by swapping the project copy, changing the
-            palette variables, or simplifying the CSS illustration piece by
-            piece.
+            The structure stays practical for learning web design: clear
+            sections, reusable project cards, responsive composition, and CSS
+            illustration pieces you can study or replace over time.
           </p>
         </div>
       </section>
@@ -119,7 +124,7 @@ function App() {
       <section className="section" id="work">
         <div className="section-heading">
           <p className="eyebrow">Selected Work</p>
-          <h2>Projects with character, rhythm, and clear hierarchy.</h2>
+          <h2>Case-study cards with cinematic rhythm and clear hierarchy.</h2>
         </div>
 
         <div className="project-grid">
@@ -144,9 +149,9 @@ function App() {
           <p className="eyebrow">Contact</p>
           <h2>Available for portfolio feedback, visual systems, and UI builds.</h2>
         </div>
-        <a className="stamp" href="mailto:hello@maxceban.dev">
+        <a className="stamp" href="mailto:maxceban2019@gmail.com">
           <span>Max Ceban</span>
-          <strong>hello@maxceban.dev</strong>
+          <strong>maxceban2019@gmail.com</strong>
         </a>
       </section>
     </main>
