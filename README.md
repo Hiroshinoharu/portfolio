@@ -7,7 +7,6 @@ Personal portfolio website built with React, TypeScript, Vite, and CSS. The site
 - React
 - TypeScript
 - Vite
-- Tailwind CSS import support
 - CSS custom properties
 - Inline SVG illustrations
 
@@ -45,8 +44,12 @@ src/
   App.css       Component-level styling, hero art, project cards, stack cards, socials
   index.css     Global theme variables, base styles, and page background
   assets/
+    github-pfp-small.png
     github-pfp.png
     max.jpeg
+public/
+  max-ceban-cv.pdf
+  favicon.png
 ```
 
 ## Main Sections
@@ -57,6 +60,7 @@ The hero introduces the portfolio with:
 
 - headline and intro copy
 - call-to-action buttons
+- CV download link
 - CSS-built anime/cyber banner art
 - animated code-rain background
 - GitHub profile image used as the logo mark
@@ -70,6 +74,17 @@ The about section includes:
 - short personal introduction
 - real portrait image from `src/assets/max.jpeg`
 - framed image styling with a subtle screen-tone overlay
+
+### Journey
+
+The journey section is generated from the `journey` array in `src/App.tsx`.
+
+It presents:
+
+- education
+- work experience
+- leadership
+- certifications and continued learning
 
 ### Tech Stack
 
@@ -100,8 +115,11 @@ Each card includes:
 - year
 - category
 - description
+- recruiter-friendly highlight bullets
 - custom SVG illustration
 - stack badges
+- external project link
+- confidentiality note when a repository cannot be shared
 
 Project poster SVGs are rendered by `ProjectIllustration()` in `src/App.tsx`.
 
@@ -110,10 +128,21 @@ Project poster SVGs are rendered by `ProjectIllustration()` in `src/App.tsx`.
 The contact section includes:
 
 - short availability copy
+- email and CV call-to-action buttons
 - social/contact panels for LinkedIn, GitHub, NextPlay, and email
 - inline SVG icons for each panel
 
 Social links are controlled by the `socials` array in `src/App.tsx`.
+
+### Navigation and Theme
+
+The header includes:
+
+- section navigation links
+- a mobile hamburger menu
+- light and dark mode toggle
+
+Theme state is stored in `localStorage` using the `portfolio-theme` key.
 
 ## Editing Content
 
@@ -128,10 +157,15 @@ const projects = [
     title: 'NextPlay',
     category: 'ML recommender',
     description: '...',
+    highlights: ['...', '...', '...'],
     stack: ['React', 'Vite', 'Go'],
+    projectUrl: 'https://example.com',
+    projectLinkLabel: 'View project',
   },
 ]
 ```
+
+For confidential projects, omit `projectUrl` and use `projectNote` instead.
 
 Update tech stack:
 
@@ -159,7 +193,7 @@ const socials = [
 
 ## Styling Notes
 
-Global theme colors live in `src/index.css`:
+Global theme colors live in `src/index.css`. Light and dark mode each define their own values:
 
 ```css
 :root {
@@ -186,8 +220,11 @@ The visual style uses:
 
 ## Assets
 
-- `src/assets/github-pfp.png` is used for the top-left logo.
+- `src/assets/github-pfp-small.png` is used for the top-left logo.
+- `src/assets/github-pfp.png` is the original larger source image.
 - `src/assets/max.jpeg` is used in the About section.
+- `public/favicon.png` is the browser favicon.
+- `public/max-ceban-cv.pdf` is linked by the CV download buttons.
 
 If replacing either image, keep the same filename or update the import in `src/App.tsx`.
 

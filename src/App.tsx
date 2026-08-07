@@ -1,5 +1,6 @@
+import { useEffect, useState } from 'react'
 import './App.css'
-import githubPfp from './assets/github-pfp.png'
+import githubPfp from './assets/github-pfp-small.png'
 import maxPhoto from './assets/max.jpeg'
 
 // Main portfolio cards. The UI renders these into the Selected Work section.
@@ -10,6 +11,11 @@ const projects = [
     category: 'ML recommender',
     description:
       'Distributed full-stack game recommender using Go, FastAPI, PostgreSQL, Keras, Docker, and Kubernetes to deliver personalised recommendations from user interaction data.',
+    highlights: [
+      'Built a deployed full-stack recommendation experience with a React and Vite frontend.',
+      'Connected Go, FastAPI, PostgreSQL, Keras, Docker, and Kubernetes across the platform.',
+      'Focused on personalised recommendations from user interaction data.',
+    ],
     stack: ['React', 'Vite', 'Go', 'FastAPI', 'PostgreSQL', 'Keras', 'Docker', 'Kubernetes'],
     projectUrl: 'https://nextplay.up.railway.app/',
     projectLinkLabel: 'Open NextPlay',
@@ -20,8 +26,13 @@ const projects = [
     category: 'Java / ML',
     description:
       'Built a convolutional neural network from scratch in Java, reaching 93% image classification accuracy with multithreaded training and a custom metrics GUI.',
+    highlights: [
+      'Implemented core CNN logic manually in Java instead of relying on a machine learning framework.',
+      'Reached 93% image classification accuracy during testing.',
+      'Added multithreaded training and a custom GUI for reviewing metrics.',
+    ],
     stack: ['Java', 'ML', 'Threads', 'GUI'],
-    projectUrl: 'https://github.com/Hiroshinoharu//machineLearningProject',
+    projectUrl: 'https://github.com/Hiroshinoharu/machineLearningProject',
     projectLinkLabel: 'View on GitHub',
   },
   {
@@ -30,6 +41,11 @@ const projects = [
     category: 'Full-stack app',
     description:
       'Full-stack artwork catalogue for browsing, searching, filtering, paginating, adding, editing, and deleting MoMA artwork records stored in MongoDB.',
+    highlights: [
+      'Built a React and Vite frontend for browsing large artwork records.',
+      'Created an Express and MongoDB backend with server-side search, filters, and pagination.',
+      'Added full record management with create, edit, and delete flows.',
+    ],
     stack: ['React', 'Vite', 'Node.js', 'Express', 'MongoDB', 'Mongoose'],
     projectUrl: 'https://github.com/Hiroshinoharu/MOMA',
     projectLinkLabel: 'View on GitHub',
@@ -40,9 +56,13 @@ const projects = [
     category: 'Data automation',
     description:
       'Python ETL and web-scraping automation for dataset cleaning, CKAN API uploads, and scheduled publishing through a Windows service.',
+    highlights: [
+      'Automated dataset cleaning and preparation with Python ETL scripts.',
+      'Integrated CKAN API uploads into a repeatable publishing workflow.',
+      'Supported reporting work with Power BI-ready outputs.',
+    ],
     stack: ['Python', 'ETL', 'CKAN API', 'Power BI'],
-    projectUrl: 'https://github.com/Hiroshinoharu/',
-    projectLinkLabel: 'View on GitHub',
+    projectNote: 'Repository unavailable due to confidentiality.',
   },
 ]
 
@@ -66,6 +86,37 @@ const skillGroups = [
   {
     title: 'Tools',
     items: ['Docker', 'Kubernetes', 'PostgreSQL', 'MongoDB', 'Git', 'REST APIs'],
+  },
+]
+
+const journey = [
+  {
+    period: '2021 - 2026',
+    type: 'Education',
+    title: 'BSc (Hons) Computer Science (Infrastructure)',
+    place: 'Technological University Dublin',
+    detail: 'First Class Honours with coursework in algorithms, operating systems, databases, software engineering, and networking.',
+  },
+  {
+    period: 'Jan 2025 - Aug 2025',
+    type: 'Work Experience',
+    title: 'Data Analyst Intern',
+    place: 'Dublin City Council',
+    detail: 'Built Python data pipelines, delivered 10+ Power BI dashboards, worked with 20+ stakeholders, and automated data scraping and publishing workflows.',
+  },
+  {
+    period: '2023 - Present',
+    type: 'Leadership',
+    title: 'Class Representative',
+    place: 'TU Dublin Students Union',
+    detail: 'Represented 50+ students, raised course concerns, supported timetable coordination, and improved student-lecturer communication.',
+  },
+  {
+    period: 'Certifications',
+    type: 'Learning',
+    title: 'Cloud, Networking, and Linux',
+    place: 'AWS / Cisco / NDG',
+    detail: 'Completed AWS Cloud Practitioner Essentials, Cisco CCNA 1-3 coursework, and NDG Linux Essentials.',
   },
 ]
 
@@ -190,30 +241,87 @@ const socials = [
 ]
 
 function App() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const storedTheme = window.localStorage.getItem('portfolio-theme')
+
+    if (storedTheme === 'light' || storedTheme === 'dark') {
+      return storedTheme
+    }
+
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  })
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme
+    window.localStorage.setItem('portfolio-theme', theme)
+  }, [theme])
+
+  const nextTheme = theme === 'light' ? 'dark' : 'light'
+  const closeMenu = () => setIsMenuOpen(false)
+
   return (
     <main className="site-shell">
       <header className="topbar" aria-label="Primary navigation">
         <a className="brand" href="#top" aria-label="Max Ceban home">
           <img src={githubPfp} alt="Max Ceban logo" />
         </a>
-        <nav>
-          <a href="#work">Work</a>
-          <a href="#stack">Stack</a>
-          <a href="#about">About</a>
-          <a href="#contact">Contact</a>
+        <button
+          className="menu-toggle"
+          type="button"
+          aria-label={isMenuOpen ? 'Close navigation menu' : 'Open navigation menu'}
+          aria-controls="primary-nav"
+          aria-expanded={isMenuOpen}
+          onClick={() => setIsMenuOpen((open) => !open)}
+        >
+          <span aria-hidden="true" />
+        </button>
+        <nav id="primary-nav" className={isMenuOpen ? 'is-open' : undefined}>
+          <a href="#top" onClick={closeMenu}>
+            Home
+          </a>
+          <a href="#about" onClick={closeMenu}>
+            About
+          </a>
+          <a href="#journey" onClick={closeMenu}>
+            Journey
+          </a>
+          <a href="#stack" onClick={closeMenu}>
+            Stack
+          </a>
+          <a href="#work" onClick={closeMenu}>
+            Work
+          </a>
+          <a href="#contact" onClick={closeMenu}>
+            Contact
+          </a>
         </nav>
+        <button
+          className="theme-toggle"
+          type="button"
+          aria-label={`Switch to ${nextTheme} mode`}
+          aria-pressed={theme === 'dark'}
+          onClick={() => setTheme(nextTheme)}
+        >
+          <span aria-hidden="true">{theme === 'light' ? 'DRK' : 'LIT'}</span>
+          {theme === 'light' ? 'Dark' : 'Light'}
+        </button>
       </header>
 
       <section className="hero" id="top">
         <div className="hero-copy">
           <p className="eyebrow">Software Development / Data Analytics / Problem Solving</p>
           <h1>Max Ceban</h1>
+          <p className="role-title">Software Developer & Data Analyst</p>
           <p className="intro">
-            An aspiring software and data professional passionate about building useful applications, analysing data and continuously learning new technologies.
+            Computer Science graduate building full-stack applications, data pipelines, and practical tools that turn technical ideas into useful products.
           </p>
           <div className="hero-actions">
             <a className="button primary" href="#work">
               View work
+            </a>
+            <a className="button" href="/max-ceban-cv.pdf" target="_blank" rel="noreferrer">
+              Download CV
             </a>
             <a className="button" href="#contact">
               Say hello
@@ -284,6 +392,30 @@ function App() {
         </div>
       </section>
 
+      <section className="section journey-section" id="journey">
+        <div className="section-heading">
+          <p className="eyebrow">Journey</p>
+          <h2>Education, experience, leadership, and continued learning.</h2>
+        </div>
+
+        <div className="journey-tree">
+          {journey.map((item) => (
+            <article className="journey-node" key={`${item.period}-${item.title}`}>
+              <div className="journey-marker" aria-hidden="true" />
+              <div className="journey-card">
+                <div className="journey-meta">
+                  <span>{item.period}</span>
+                  <span>{item.type}</span>
+                </div>
+                <h3>{item.title}</h3>
+                <strong>{item.place}</strong>
+                <p>{item.detail}</p>
+              </div>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="section stack-section" id="stack">
         <div className="section-heading">
           <p className="eyebrow">Tech Stack</p>
@@ -331,6 +463,11 @@ function App() {
               </div>
               <h3>{project.title}</h3>
               <p>{project.description}</p>
+              <ul className="project-highlights" aria-label={`${project.title} highlights`}>
+                {project.highlights.map((highlight) => (
+                  <li key={highlight}>{highlight}</li>
+                ))}
+              </ul>
               <div className="tech-stack" aria-label={`${project.title} tech stack`}>
                 {project.stack.map((tech) => (
                   <span className="tech-chip" key={tech}>
@@ -344,17 +481,21 @@ function App() {
                   </span>
                 ))}
               </div>
-              <a
-                className="project-link"
-                href={project.projectUrl}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <svg className="project-link-icon" viewBox="0 0 32 32" aria-hidden="true">
-                  <path d="M16 3C8.8 3 3 8.8 3 16c0 5.7 3.7 10.6 8.8 12.3.6.1.8-.3.8-.6v-2.2c-3.6.8-4.4-1.5-4.4-1.5-.6-1.5-1.4-1.9-1.4-1.9-1.2-.8.1-.8.1-.8 1.3.1 2 1.4 2 1.4 1.1 2 3 1.4 3.7 1.1.1-.8.4-1.4.8-1.7-2.9-.3-5.9-1.4-5.9-6.4 0-1.4.5-2.6 1.4-3.5-.1-.3-.6-1.7.1-3.5 0 0 1.1-.4 3.6 1.3 1-.3 2.2-.4 3.3-.4s2.3.1 3.3.4c2.5-1.7 3.6-1.3 3.6-1.3.7 1.8.2 3.2.1 3.5.9.9 1.4 2.1 1.4 3.5 0 5-3 6.1-5.9 6.4.5.4.9 1.2.9 2.5v3.6c0 .3.2.7.9.6A13 13 0 0 0 29 16C29 8.8 23.2 3 16 3Z" />
-                </svg>
-                {project.projectLinkLabel}
-              </a>
+              {'projectUrl' in project ? (
+                <a
+                  className="project-link"
+                  href={project.projectUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <svg className="project-link-icon" viewBox="0 0 32 32" aria-hidden="true">
+                    <path d="M16 3C8.8 3 3 8.8 3 16c0 5.7 3.7 10.6 8.8 12.3.6.1.8-.3.8-.6v-2.2c-3.6.8-4.4-1.5-4.4-1.5-.6-1.5-1.4-1.9-1.4-1.9-1.2-.8.1-.8.1-.8 1.3.1 2 1.4 2 1.4 1.1 2 3 1.4 3.7 1.1.1-.8.4-1.4.8-1.7-2.9-.3-5.9-1.4-5.9-6.4 0-1.4.5-2.6 1.4-3.5-.1-.3-.6-1.7.1-3.5 0 0 1.1-.4 3.6 1.3 1-.3 2.2-.4 3.3-.4s2.3.1 3.3.4c2.5-1.7 3.6-1.3 3.6-1.3.7 1.8.2 3.2.1 3.5.9.9 1.4 2.1 1.4 3.5 0 5-3 6.1-5.9 6.4.5.4.9 1.2.9 2.5v3.6c0 .3.2.7.9.6A13 13 0 0 0 29 16C29 8.8 23.2 3 16 3Z" />
+                  </svg>
+                  {project.projectLinkLabel}
+                </a>
+              ) : (
+                <p className="project-note">{project.projectNote}</p>
+              )}
             </article>
           ))}
         </div>
@@ -364,9 +505,17 @@ function App() {
         <div>
           <p className="eyebrow">Contact</p>
           <h2>Open to software, data, and graduate technology opportunities.</h2>
-          <p className="contact-copy">
-            Reach out if you want to discuss a role, collaborate on a project, or see more detail about NextPlay, my data work, or my machine learning projects.
+              <p className="contact-copy">
+            I'm open to graduate software, junior developer, and data analyst roles. Reach out if you want to discuss a role, collaborate on a project, or see more detail about NextPlay, my data work, or my machine learning projects.
           </p>
+          <div className="contact-actions">
+            <a className="button primary" href="mailto:maxceban2019@gmail.com">
+              Email me
+            </a>
+            <a className="button" href="/max-ceban-cv.pdf" target="_blank" rel="noreferrer">
+              Download CV
+            </a>
+          </div>
         </div>
         <div className="social-panel" aria-label="Social links">
           {socials.map((social) => (
