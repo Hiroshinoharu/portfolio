@@ -105,7 +105,7 @@ const journey = [
     detail: 'Built Python data pipelines, delivered 10+ Power BI dashboards, worked with 20+ stakeholders, and automated data scraping and publishing workflows.',
   },
   {
-    period: '2023 - Present',
+    period: '2023 - 2026',
     type: 'Leadership',
     title: 'Class Representative',
     place: 'TU Dublin Students Union',
@@ -153,7 +153,7 @@ const techIconText: Record<string, string> = {
 }
 
 // Lightweight SVG poster art for each project card, selected by project index.
-function ProjectIllustration({ index }: { index: number }) {
+function ProjectIllustration({ index }: { readonly index: number }) {
   if (index === 0) {
     return (
       <svg className="project-illustration" viewBox="0 0 320 210" aria-hidden="true">
