@@ -7,6 +7,7 @@ Personal portfolio website built with React, TypeScript, Vite, and CSS. The site
 - React
 - TypeScript
 - Vite
+- Motion for React
 - CSS custom properties
 - Inline SVG illustrations
 
@@ -144,6 +145,19 @@ The header includes:
 
 Theme state is stored in `localStorage` using the `portfolio-theme` key.
 
+### Motion
+
+The site uses Motion for React from the `motion` package.
+
+Beginner-friendly examples live in `src/App.tsx`:
+
+- `motion.main` and `motion.header` for page entrance animation
+- shared `reveal` and `stagger` objects for simple reusable variants
+- `whileInView` for scroll reveal sections
+- `AnimatePresence` for the mobile hamburger menu
+- `whileHover` and `whileTap` for small interaction feedback
+- `useReducedMotion` to respect reduced-motion accessibility preferences
+
 ## Editing Content
 
 Most content is data-driven in `src/App.tsx`.
@@ -217,6 +231,7 @@ The visual style uses:
 - SVG-style project illustrations
 - CSS-drawn hero character
 - compact tech/social badges
+- subtle Motion-powered entrance and scroll animations
 
 ## Assets
 

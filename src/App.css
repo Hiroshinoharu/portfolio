@@ -60,6 +60,10 @@
   outline: none;
 }
 
+.mobile-nav {
+  display: none;
+}
+
 .menu-toggle {
   display: none;
   width: 44px;
@@ -1491,8 +1495,12 @@ h3 {
     margin-right: 2px;
   }
 
-  .topbar nav {
+  .topbar .desktop-nav {
     display: none;
+  }
+
+  .topbar .mobile-nav {
+    display: grid;
     order: 4;
     width: 100%;
     grid-template-columns: 1fr;
@@ -1501,13 +1509,10 @@ h3 {
     border: 2px solid var(--ink);
     background: var(--panel);
     box-shadow: 5px 5px 0 var(--cyan);
+    overflow: hidden;
   }
 
-  .topbar nav.is-open {
-    display: grid;
-  }
-
-  .topbar nav a {
+  .topbar .mobile-nav a {
     width: 100%;
     border-color: var(--rule);
     background: var(--soft);

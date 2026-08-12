@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.3",
+    "motion": "^13.1.0",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "styled-components": "^6.5.1",
@@ -31,6 +32,7 @@
     "vite": "^8.2.0"
   },
   "allowScripts": {
-    "styled-components@6.5.1": true
+    "styled-components@6.5.1": true,
+    "motion@13.1.0": true
   }
 }

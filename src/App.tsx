@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import './App.css'
 import githubPfp from './assets/github-pfp-small.png'
 import maxPhoto from './assets/max.jpeg'
@@ -240,8 +241,32 @@ const socials = [
   },
 ]
 
+const navLinks = [
+  { href: '#top', label: 'Home' },
+  { href: '#about', label: 'About' },
+  { href: '#journey', label: 'Journey' },
+  { href: '#stack', label: 'Stack' },
+  { href: '#work', label: 'Work' },
+  { href: '#contact', label: 'Contact' },
+]
+
+const reveal = {
+  hidden: { opacity: 0, y: 28 },
+  visible: { opacity: 1, y: 0 },
+}
+
+const stagger = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.08,
+    },
+  },
+}
+
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const reduceMotion = useReducedMotion()
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const storedTheme = window.localStorage.getItem('portfolio-theme')
 
@@ -259,13 +284,31 @@ function App() {
 
   const nextTheme = theme === 'light' ? 'dark' : 'light'
   const closeMenu = () => setIsMenuOpen(false)
+  const revealTransition = reduceMotion ? { duration: 0 } : { duration: 0.45, ease: 'easeOut' as const }
 
   return (
-    <main className="site-shell">
-      <header className="topbar" aria-label="Primary navigation">
-        <a className="brand" href="#top" aria-label="Max Ceban home">
+    <motion.main
+      className="site-shell"
+      initial={reduceMotion ? false : { opacity: 0 }}
+      animate={reduceMotion ? undefined : { opacity: 1 }}
+      transition={{ duration: 0.35 }}
+    >
+      <motion.header
+        className="topbar"
+        aria-label="Primary navigation"
+        initial={reduceMotion ? false : { opacity: 0, y: -14 }}
+        animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+        transition={revealTransition}
+      >
+        <motion.a
+          className="brand"
+          href="#top"
+          aria-label="Max Ceban home"
+          whileHover={reduceMotion ? undefined : { y: -2 }}
+          whileTap={reduceMotion ? undefined : { scale: 0.96 }}
+        >
           <img src={githubPfp} alt="Max Ceban logo" />
-        </a>
+        </motion.a>
         <button
           className="menu-toggle"
           type="button"
@@ -276,26 +319,37 @@ function App() {
         >
           <span aria-hidden="true" />
         </button>
-        <nav id="primary-nav" className={isMenuOpen ? 'is-open' : undefined}>
-          <a href="#top" onClick={closeMenu}>
-            Home
-          </a>
-          <a href="#about" onClick={closeMenu}>
-            About
-          </a>
-          <a href="#journey" onClick={closeMenu}>
-            Journey
-          </a>
-          <a href="#stack" onClick={closeMenu}>
-            Stack
-          </a>
-          <a href="#work" onClick={closeMenu}>
-            Work
-          </a>
-          <a href="#contact" onClick={closeMenu}>
-            Contact
-          </a>
+        <nav className="desktop-nav" aria-label="Desktop navigation">
+          {navLinks.map((link) => (
+            <a href={link.href} key={link.href}>
+              {link.label}
+            </a>
+          ))}
         </nav>
+        <AnimatePresence initial={false}>
+          {isMenuOpen ? (
+            <motion.nav
+              id="primary-nav"
+              className="mobile-nav is-open"
+              aria-label="Mobile navigation"
+              initial={reduceMotion ? false : { opacity: 0, height: 0, y: -8 }}
+              animate={reduceMotion ? { opacity: 1, height: 'auto' } : { opacity: 1, height: 'auto', y: 0 }}
+              exit={reduceMotion ? { opacity: 0 } : { opacity: 0, height: 0, y: -8 }}
+              transition={{ duration: 0.22, ease: 'easeOut' }}
+            >
+              {navLinks.map((link) => (
+                <motion.a
+                  href={link.href}
+                  key={link.href}
+                  onClick={closeMenu}
+                  whileTap={reduceMotion ? undefined : { scale: 0.98 }}
+                >
+                  {link.label}
+                </motion.a>
+              ))}
+            </motion.nav>
+          ) : null}
+        </AnimatePresence>
         <button
           className="theme-toggle"
           type="button"
@@ -306,17 +360,22 @@ function App() {
           <span aria-hidden="true">{theme === 'light' ? 'DRK' : 'LIT'}</span>
           {theme === 'light' ? 'Dark' : 'Light'}
         </button>
-      </header>
+      </motion.header>
 
       <section className="hero" id="top">
-        <div className="hero-copy">
-          <p className="eyebrow">Software Development / Data Analytics / Problem Solving</p>
-          <h1>Max Ceban</h1>
-          <p className="role-title">Software Developer & Data Analyst</p>
-          <p className="intro">
+        <motion.div
+          className="hero-copy"
+          variants={stagger}
+          initial={reduceMotion ? false : 'hidden'}
+          animate="visible"
+        >
+          <motion.p className="eyebrow" variants={reveal} transition={revealTransition}>Software Development / Data Analytics / Problem Solving</motion.p>
+          <motion.h1 variants={reveal} transition={revealTransition}>Max Ceban</motion.h1>
+          <motion.p className="role-title" variants={reveal} transition={revealTransition}>Software Developer & Data Analyst</motion.p>
+          <motion.p className="intro" variants={reveal} transition={revealTransition}>
             Computer Science graduate building full-stack applications, data pipelines, and practical tools that turn technical ideas into useful products.
-          </p>
-          <div className="hero-actions">
+          </motion.p>
+          <motion.div className="hero-actions" variants={reveal} transition={revealTransition}>
             <a className="button primary" href="#work">
               View work
             </a>
@@ -326,10 +385,16 @@ function App() {
             <a className="button" href="#contact">
               Say hello
             </a>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
 
-        <div className="hero-art" aria-label="Anime-inspired portfolio panel">
+        <motion.div
+          className="hero-art"
+          aria-label="Anime-inspired portfolio panel"
+          initial={reduceMotion ? false : { opacity: 0, x: 38, rotate: 1 }}
+          animate={reduceMotion ? undefined : { opacity: 1, x: 0, rotate: 0 }}
+          transition={{ duration: 0.55, delay: 0.18, ease: 'easeOut' }}
+        >
           <div className="panel panel-large">
             <div className="code-rain" aria-hidden="true">
               {codeRainColumns.map((column) => (
@@ -363,21 +428,36 @@ function App() {
             <span />
             <span />
           </div>
-        </div>
+        </motion.div>
       </section>
 
       <section className="marquee" aria-label="Services">
         {services.map((service) => (
-          <span key={service}>{service}</span>
+          <motion.span
+            key={service}
+            initial={reduceMotion ? false : { opacity: 0, y: 12 }}
+            whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.45 }}
+            transition={revealTransition}
+          >
+            {service}
+          </motion.span>
         ))}
       </section>
 
-      <section className="section split" id="about">
+      <motion.section
+        className="section split"
+        id="about"
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.2 }}
+        variants={stagger}
+      >
         <div>
-          <p className="eyebrow">Hello</p>
-          <h2>Building software, exploring data, and solving problems</h2>
+          <motion.p className="eyebrow" variants={reveal} transition={revealTransition}>Hello</motion.p>
+          <motion.h2 variants={reveal} transition={revealTransition}>Building software, exploring data, and solving problems</motion.h2>
         </div>
-        <div className="about-panel">
+        <motion.div className="about-panel" variants={reveal} transition={revealTransition}>
           <figure className="about-photo">
             <img src={maxPhoto} alt="Portrait of Max Ceban" />
           </figure>
@@ -389,18 +469,25 @@ function App() {
               I enjoy working across the development process, from analysing data and automating workflows to building applications and integrating APIs. I'm always looking for opportunities to expand my skills and take on new technical challenges.
             </p>
           </div>
-        </div>
-      </section>
+        </motion.div>
+      </motion.section>
 
-      <section className="section journey-section" id="journey">
+      <motion.section
+        className="section journey-section"
+        id="journey"
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.16 }}
+        variants={stagger}
+      >
         <div className="section-heading">
-          <p className="eyebrow">Journey</p>
-          <h2>Education, experience, leadership, and continued learning.</h2>
+          <motion.p className="eyebrow" variants={reveal} transition={revealTransition}>Journey</motion.p>
+          <motion.h2 variants={reveal} transition={revealTransition}>Education, experience, leadership, and continued learning.</motion.h2>
         </div>
 
         <div className="journey-tree">
           {journey.map((item) => (
-            <article className="journey-node" key={`${item.period}-${item.title}`}>
+            <motion.article className="journey-node" key={`${item.period}-${item.title}`} variants={reveal} transition={revealTransition}>
               <div className="journey-marker" aria-hidden="true" />
               <div className="journey-card">
                 <div className="journey-meta">
@@ -411,20 +498,27 @@ function App() {
                 <strong>{item.place}</strong>
                 <p>{item.detail}</p>
               </div>
-            </article>
+            </motion.article>
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="section stack-section" id="stack">
+      <motion.section
+        className="section stack-section"
+        id="stack"
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.16 }}
+        variants={stagger}
+      >
         <div className="section-heading">
-          <p className="eyebrow">Tech Stack</p>
-          <h2>Languages, frameworks, data tools, and deployment experience.</h2>
+          <motion.p className="eyebrow" variants={reveal} transition={revealTransition}>Tech Stack</motion.p>
+          <motion.h2 variants={reveal} transition={revealTransition}>Languages, frameworks, data tools, and deployment experience.</motion.h2>
         </div>
 
         <div className="stack-grid">
           {skillGroups.map((group) => (
-            <article className="stack-card" key={group.title}>
+            <motion.article className="stack-card" key={group.title} variants={reveal} transition={revealTransition}>
               <h3>{group.title}</h3>
               <div className="stack-list">
                 {group.items.map((tech) => (
@@ -439,20 +533,33 @@ function App() {
                   </span>
                 ))}
               </div>
-            </article>
+            </motion.article>
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="section" id="work">
+      <motion.section
+        className="section"
+        id="work"
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.12 }}
+        variants={stagger}
+      >
         <div className="section-heading">
-          <p className="eyebrow">Selected Work</p>
-          <h2>Software, machine learning, and data automation projects.</h2>
+          <motion.p className="eyebrow" variants={reveal} transition={revealTransition}>Selected Work</motion.p>
+          <motion.h2 variants={reveal} transition={revealTransition}>Software, machine learning, and data automation projects.</motion.h2>
         </div>
 
         <div className="project-grid">
           {projects.map((project, index) => (
-            <article className="project-card" key={project.title}>
+            <motion.article
+              className="project-card"
+              key={project.title}
+              variants={reveal}
+              transition={revealTransition}
+              whileHover={reduceMotion ? undefined : { y: -6 }}
+            >
               <div className={`project-poster poster-${index + 1}`}>
                 <ProjectIllustration index={index} />
                 <span>{project.year}</span>
@@ -496,16 +603,23 @@ function App() {
               ) : (
                 <p className="project-note">{project.projectNote}</p>
               )}
-            </article>
+            </motion.article>
           ))}
         </div>
-      </section>
+      </motion.section>
 
-      <section className="section contact" id="contact">
-        <div>
+      <motion.section
+        className="section contact"
+        id="contact"
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.18 }}
+        variants={stagger}
+      >
+        <motion.div variants={reveal} transition={revealTransition}>
           <p className="eyebrow">Contact</p>
           <h2>Open to software, data, and graduate technology opportunities.</h2>
-              <p className="contact-copy">
+          <p className="contact-copy">
             I'm open to graduate software, junior developer, and data analyst roles. Reach out if you want to discuss a role, collaborate on a project, or see more detail about NextPlay, my data work, or my machine learning projects.
           </p>
           <div className="contact-actions">
@@ -516,15 +630,18 @@ function App() {
               Download CV
             </a>
           </div>
-        </div>
+        </motion.div>
         <div className="social-panel" aria-label="Social links">
           {socials.map((social) => (
-            <a
+            <motion.a
               className={`social-card ${social.className}`}
               href={social.href}
               key={social.label}
               target={social.href.startsWith('mailto:') ? undefined : '_blank'}
               rel={social.href.startsWith('mailto:') ? undefined : 'noreferrer'}
+              variants={reveal}
+              transition={revealTransition}
+              whileTap={reduceMotion ? undefined : { scale: 0.97 }}
             >
               <svg
                 className="social-icon"
@@ -534,11 +651,11 @@ function App() {
                 <path d={social.icon} />
               </svg>
               <span>{social.label}</span>
-            </a>
+            </motion.a>
           ))}
         </div>
-      </section>
-    </main>
+      </motion.section>
+    </motion.main>
   )
 }
 
