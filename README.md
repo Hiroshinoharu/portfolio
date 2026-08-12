@@ -76,6 +76,18 @@ The about section includes:
 - real portrait image from `src/assets/max.jpeg`
 - framed image styling with a subtle screen-tone overlay
 
+### Featured Project
+
+The featured project section highlights NextPlay as the main case study.
+
+It includes:
+
+- short problem and implementation summary
+- real NextPlay interface screenshot
+- live app call-to-action
+- compact architecture flow
+- focused technical bullets
+
 ### Journey
 
 The journey section is generated from the `journey` array in `src/App.tsx`.
@@ -144,6 +156,14 @@ The header includes:
 - light and dark mode toggle
 
 Theme state is stored in `localStorage` using the `portfolio-theme` key.
+
+### Footer and Sharing
+
+The footer includes a short build credit and back-to-top link.
+
+Social sharing metadata lives in `index.html`, and the Open Graph preview image is:
+
+- `public/og-image.svg`
 
 ### Motion
 
@@ -238,8 +258,10 @@ The visual style uses:
 - `src/assets/github-pfp-small.png` is used for the top-left logo.
 - `src/assets/github-pfp.png` is the original larger source image.
 - `src/assets/max.jpeg` is used in the About section.
+- `src/assets/nextplay-screenshot.jpg` is used in the Featured Project section.
 - `public/favicon.png` is the browser favicon.
 - `public/max-ceban-cv.pdf` is linked by the CV download buttons.
+- `public/og-image.svg` is used for social sharing previews.
 
 If replacing either image, keep the same filename or update the import in `src/App.tsx`.
 

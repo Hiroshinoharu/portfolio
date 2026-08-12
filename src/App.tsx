@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import './App.css'
 import githubPfp from './assets/github-pfp-small.png'
 import maxPhoto from './assets/max.jpeg'
+import nextPlayScreenshot from './assets/nextplay-screenshot.jpg'
 
 // Main portfolio cards. The UI renders these into the Selected Work section.
 const projects = [
@@ -244,10 +245,18 @@ const socials = [
 const navLinks = [
   { href: '#top', label: 'Home' },
   { href: '#about', label: 'About' },
+  { href: '#featured', label: 'Featured' },
   { href: '#journey', label: 'Journey' },
   { href: '#stack', label: 'Stack' },
   { href: '#work', label: 'Work' },
   { href: '#contact', label: 'Contact' },
+]
+
+const nextPlayFlow = [
+  { label: 'React + Vite', detail: 'User interface' },
+  { label: 'Go API', detail: 'Core services' },
+  { label: 'FastAPI + Keras', detail: 'ML inference' },
+  { label: 'PostgreSQL', detail: 'Interaction data' },
 ]
 
 const reveal = {
@@ -473,6 +482,71 @@ function App() {
       </motion.section>
 
       <motion.section
+        className="section featured-project"
+        id="featured"
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.16 }}
+        variants={stagger}
+      >
+        <motion.div className="section-heading" variants={reveal} transition={revealTransition}>
+          <p className="eyebrow">Featured Project</p>
+          <h2>NextPlay connects full-stack engineering with machine learning recommendations.</h2>
+        </motion.div>
+
+        <motion.div className="featured-grid" variants={reveal} transition={revealTransition}>
+          <article className="featured-copy">
+            <div className="featured-meta">
+              <span>Live app</span>
+              <span>2026</span>
+            </div>
+            <h3>Personalised game recommendations</h3>
+            <p>
+              NextPlay is the strongest showcase project on this portfolio: a deployed recommender system that combines a React interface, backend services, persistent data, and machine learning inference.
+            </p>
+            <ul className="featured-list">
+              <li>Built the frontend experience with React and Vite.</li>
+              <li>Connected Go and FastAPI services around recommendation workflows.</li>
+              <li>Used PostgreSQL interaction data and Keras models for personalised outputs.</li>
+              <li>Containerised the system with Docker and Kubernetes-oriented deployment thinking.</li>
+            </ul>
+            <div className="featured-actions">
+              <a className="button primary" href="https://nextplay.up.railway.app/" target="_blank" rel="noreferrer">
+                Open NextPlay
+              </a>
+              <a className="button" href="#work">
+                View all work
+              </a>
+            </div>
+          </article>
+
+          <div className="featured-media" aria-label="NextPlay app screenshot and architecture overview">
+            <figure className="nextplay-preview">
+              <img src={nextPlayScreenshot} alt="NextPlay game recommendation homepage screenshot" />
+              <figcaption>Live NextPlay interface</figcaption>
+            </figure>
+
+            <div className="architecture-card" aria-label="NextPlay architecture overview">
+              <div className="architecture-screen">
+                {nextPlayFlow.map((step, index) => (
+                  <motion.div
+                    className="architecture-node"
+                    key={step.label}
+                    variants={reveal}
+                    transition={{ ...revealTransition, delay: reduceMotion ? 0 : index * 0.04 }}
+                  >
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{step.label}</strong>
+                    <small>{step.detail}</small>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </motion.div>
+      </motion.section>
+
+      <motion.section
         className="section journey-section"
         id="journey"
         initial={reduceMotion ? false : 'hidden'}
@@ -655,6 +729,12 @@ function App() {
           ))}
         </div>
       </motion.section>
+
+      <footer className="site-footer">
+        <p>Max Ceban © 2026</p>
+        <p>Built with React, Vite, TypeScript, and Motion.</p>
+        <a href="#top">Back to top</a>
+      </footer>
     </motion.main>
   )
 }
