@@ -1687,6 +1687,62 @@ h3 {
 }
 
 @media (max-width: 900px) {
+  .topbar {
+    display: grid;
+    grid-template-columns: 44px 1fr 44px;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .brand {
+    justify-self: center;
+  }
+
+  .menu-toggle {
+    display: grid;
+    justify-self: start;
+  }
+
+  .topbar .desktop-nav {
+    display: none;
+  }
+
+  .topbar .mobile-nav {
+    display: grid;
+    grid-column: 1 / -1;
+    width: 100%;
+    grid-template-columns: 1fr;
+    gap: 6px;
+    padding: 10px;
+    border: 2px solid var(--ink);
+    background: var(--panel);
+    box-shadow: 5px 5px 0 var(--cyan);
+    overflow: hidden;
+  }
+
+  .topbar .mobile-nav a {
+    width: 100%;
+    border-color: var(--rule);
+    background: var(--soft);
+  }
+
+  .theme-toggle {
+    width: 44px;
+    min-height: 44px;
+    justify-self: end;
+    justify-content: center;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    font-size: 0;
+  }
+
+  .theme-toggle span {
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 0.68rem;
+  }
+
   .split,
   .contact,
   .featured-grid,
@@ -1746,64 +1802,6 @@ h3 {
   .site-shell {
     width: min(100% - 20px, 1180px);
     overflow-x: hidden;
-  }
-
-  .topbar {
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: flex-start;
-  }
-
-  .brand {
-    order: 2;
-  }
-
-  .menu-toggle {
-    display: grid;
-    order: 1;
-    margin-right: 2px;
-  }
-
-  .topbar .desktop-nav {
-    display: none;
-  }
-
-  .topbar .mobile-nav {
-    display: grid;
-    order: 4;
-    width: 100%;
-    grid-template-columns: 1fr;
-    gap: 6px;
-    padding: 10px;
-    border: 2px solid var(--ink);
-    background: var(--panel);
-    box-shadow: 5px 5px 0 var(--cyan);
-    overflow: hidden;
-  }
-
-  .topbar .mobile-nav a {
-    width: 100%;
-    border-color: var(--rule);
-    background: var(--soft);
-  }
-
-  .theme-toggle {
-    width: 44px;
-    min-height: 44px;
-    order: 3;
-    justify-content: center;
-    gap: 0;
-    margin-left: 0;
-    padding: 0;
-    overflow: hidden;
-    font-size: 0;
-  }
-
-  .theme-toggle span {
-    min-width: 100%;
-    min-height: 100%;
-    font-size: 0.68rem;
   }
 
   h1 {

@@ -341,17 +341,18 @@ function App() {
     updateScrollState()
     window.addEventListener('scroll', updateScrollState, { passive: true })
     window.addEventListener('resize', updateScrollState)
+    window.addEventListener('hashchange', updateScrollState)
 
     return () => {
       window.removeEventListener('scroll', updateScrollState)
       window.removeEventListener('resize', updateScrollState)
+      window.removeEventListener('hashchange', updateScrollState)
     }
   }, [])
 
   const nextTheme = theme === 'light' ? 'dark' : 'light'
-  const closeMenu = () => setIsMenuOpen(false)
   const revealTransition = reduceMotion ? { duration: 0 } : { duration: 0.45, ease: 'easeOut' as const }
-  const handleSectionLinkClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+  const handleMobileNavClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
     const target = document.getElementById(href.replace('#', ''))
 
     if (!target) {
@@ -359,10 +360,16 @@ function App() {
     }
 
     event.preventDefault()
-    target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
-    window.history.pushState(null, '', href)
+    setIsMenuOpen(false)
     setActiveSection(href)
-    closeMenu()
+    window.history.pushState(null, '', href)
+
+    window.setTimeout(() => {
+      target.scrollIntoView({
+        behavior: reduceMotion ? 'auto' : 'smooth',
+        block: 'start',
+      })
+    }, 0)
   }
 
   return (
@@ -386,7 +393,6 @@ function App() {
           className="brand"
           href="#top"
           aria-label="Max Ceban home"
-          onClick={(event) => handleSectionLinkClick(event, '#top')}
           whileHover={reduceMotion ? undefined : { y: -2 }}
           whileTap={reduceMotion ? undefined : { scale: 0.96 }}
         >
@@ -409,7 +415,6 @@ function App() {
               href={link.href}
               key={link.href}
               aria-current={activeSection === link.href ? 'location' : undefined}
-              onClick={(event) => handleSectionLinkClick(event, link.href)}
             >
               {link.label}
             </a>
@@ -432,7 +437,7 @@ function App() {
                   href={link.href}
                   key={link.href}
                   aria-current={activeSection === link.href ? 'location' : undefined}
-                  onClick={(event) => handleSectionLinkClick(event, link.href)}
+                  onClick={(event) => handleMobileNavClick(event, link.href)}
                   whileTap={reduceMotion ? undefined : { scale: 0.98 }}
                 >
                   {link.label}
@@ -467,13 +472,13 @@ function App() {
             Computer Science graduate building full-stack applications, data pipelines, and practical tools that turn technical ideas into useful products.
           </motion.p>
           <motion.div className="hero-actions" variants={reveal} transition={revealTransition}>
-            <a className="button primary" href="#work" onClick={(event) => handleSectionLinkClick(event, '#work')}>
+            <a className="button primary" href="#work">
               View work
             </a>
             <a className="button" href="/max-ceban-cv.pdf" target="_blank" rel="noreferrer">
               Download CV
             </a>
-            <a className="button" href="#contact" onClick={(event) => handleSectionLinkClick(event, '#contact')}>
+            <a className="button" href="#contact">
               Say hello
             </a>
           </motion.div>
@@ -596,7 +601,7 @@ function App() {
               <a className="button primary" href="https://nextplay.up.railway.app/" target="_blank" rel="noreferrer">
                 Open NextPlay
               </a>
-              <a className="button" href="#work" onClick={(event) => handleSectionLinkClick(event, '#work')}>
+              <a className="button" href="#work">
                 View all work
               </a>
             </div>
@@ -819,7 +824,7 @@ function App() {
       <footer className="site-footer">
         <p>Max Ceban © 2026</p>
         <p>Built with React, Vite, TypeScript, and Motion.</p>
-        <a href="#top" onClick={(event) => handleSectionLinkClick(event, '#top')}>Back to top</a>
+        <a href="#top">Back to top</a>
       </footer>
     </motion.main>
   )
