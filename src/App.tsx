@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type MouseEvent } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import './App.css'
+import gameCheckScreenshot from './assets/gamecheck-screenshot.jpg'
 import githubPfp from './assets/github-pfp-small.png'
 import maxPhoto from './assets/max.jpeg'
 import nextPlayScreenshot from './assets/nextplay-screenshot.jpg'
@@ -35,6 +36,24 @@ const projects = [
     ],
     stack: ['Java', 'ML', 'Threads', 'GUI'],
     projectUrl: 'https://github.com/Hiroshinoharu/machineLearningProject',
+    projectLinkLabel: 'View on GitHub',
+  },
+  {
+    year: '2024',
+    title: 'GameCheck',
+    category: 'Web dev group project',
+    description:
+      'Third year game review website built with Denis Bajgora, helping users search, filter, review, like, favorite, and track games through an account dashboard.',
+    highlights: [
+      'Implemented game search and filtering by platform and genre.',
+      'Designed game detail pages with ratings, screenshots, descriptions, and metadata.',
+      'Added account features for login, signup, liked games, favorites, and dashboard management.',
+      'Included discovery views for upcoming games and popular 2024 releases.',
+    ],
+    stack: ['JavaScript', 'EJS', 'CSS'],
+    image: gameCheckScreenshot,
+    imageAlt: 'GameCheck homepage screenshot',
+    projectUrl: 'https://github.com/denisbajgora5/GameCheck',
     projectLinkLabel: 'View on GitHub',
   },
   {
@@ -125,6 +144,8 @@ const journey = [
 const techIconText: Record<string, string> = {
   React: 'Re',
   Vite: 'V',
+  JavaScript: 'JS',
+  EJS: 'EJS',
   TypeScript: 'TS',
   C: 'C',
   SQL: 'SQL',
@@ -149,6 +170,9 @@ const techIconText: Record<string, string> = {
   'Data Pipelines': 'DP',
   Git: 'Git',
   'REST APIs': 'API',
+  Auth: 'AU',
+  Dashboard: 'DB',
+  CSS: 'CSS',
   ETL: 'ETL',
   'CKAN API': 'CK',
   'Power BI': 'BI',
@@ -260,8 +284,8 @@ const nextPlayFlow = [
 ]
 
 const reveal = {
-  hidden: { opacity: 0, y: 28 },
-  visible: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 24, filter: 'blur(4px)' },
+  visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
 }
 
 const stagger = {
@@ -275,6 +299,8 @@ const stagger = {
 
 function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [activeSection, setActiveSection] = useState(navLinks[0].href)
   const reduceMotion = useReducedMotion()
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const storedTheme = window.localStorage.getItem('portfolio-theme')
@@ -291,9 +317,53 @@ function App() {
     window.localStorage.setItem('portfolio-theme', theme)
   }, [theme])
 
+  useEffect(() => {
+    const sectionIds = navLinks.map((link) => link.href.replace('#', ''))
+
+    const updateScrollState = () => {
+      const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight
+      const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0
+      const activationLine = window.innerHeight * 0.32
+      const currentSection = sectionIds.reduce((current, sectionId) => {
+        const section = document.getElementById(sectionId)
+
+        if (!section) {
+          return current
+        }
+
+        return section.getBoundingClientRect().top <= activationLine ? `#${sectionId}` : current
+      }, navLinks[0].href)
+
+      setScrollProgress(Math.min(Math.max(progress, 0), 1))
+      setActiveSection(currentSection)
+    }
+
+    updateScrollState()
+    window.addEventListener('scroll', updateScrollState, { passive: true })
+    window.addEventListener('resize', updateScrollState)
+
+    return () => {
+      window.removeEventListener('scroll', updateScrollState)
+      window.removeEventListener('resize', updateScrollState)
+    }
+  }, [])
+
   const nextTheme = theme === 'light' ? 'dark' : 'light'
   const closeMenu = () => setIsMenuOpen(false)
   const revealTransition = reduceMotion ? { duration: 0 } : { duration: 0.45, ease: 'easeOut' as const }
+  const handleSectionLinkClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
+    const target = document.getElementById(href.replace('#', ''))
+
+    if (!target) {
+      return
+    }
+
+    event.preventDefault()
+    target.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' })
+    window.history.pushState(null, '', href)
+    setActiveSection(href)
+    closeMenu()
+  }
 
   return (
     <motion.main
@@ -302,6 +372,9 @@ function App() {
       animate={reduceMotion ? undefined : { opacity: 1 }}
       transition={{ duration: 0.35 }}
     >
+      <div className="scroll-progress" aria-hidden="true">
+        <span style={{ transform: `scaleX(${scrollProgress})` }} />
+      </div>
       <motion.header
         className="topbar"
         aria-label="Primary navigation"
@@ -313,6 +386,7 @@ function App() {
           className="brand"
           href="#top"
           aria-label="Max Ceban home"
+          onClick={(event) => handleSectionLinkClick(event, '#top')}
           whileHover={reduceMotion ? undefined : { y: -2 }}
           whileTap={reduceMotion ? undefined : { scale: 0.96 }}
         >
@@ -330,7 +404,13 @@ function App() {
         </button>
         <nav className="desktop-nav" aria-label="Desktop navigation">
           {navLinks.map((link) => (
-            <a href={link.href} key={link.href}>
+            <a
+              className={activeSection === link.href ? 'is-active' : undefined}
+              href={link.href}
+              key={link.href}
+              aria-current={activeSection === link.href ? 'location' : undefined}
+              onClick={(event) => handleSectionLinkClick(event, link.href)}
+            >
               {link.label}
             </a>
           ))}
@@ -348,9 +428,11 @@ function App() {
             >
               {navLinks.map((link) => (
                 <motion.a
+                  className={activeSection === link.href ? 'is-active' : undefined}
                   href={link.href}
                   key={link.href}
-                  onClick={closeMenu}
+                  aria-current={activeSection === link.href ? 'location' : undefined}
+                  onClick={(event) => handleSectionLinkClick(event, link.href)}
                   whileTap={reduceMotion ? undefined : { scale: 0.98 }}
                 >
                   {link.label}
@@ -385,13 +467,13 @@ function App() {
             Computer Science graduate building full-stack applications, data pipelines, and practical tools that turn technical ideas into useful products.
           </motion.p>
           <motion.div className="hero-actions" variants={reveal} transition={revealTransition}>
-            <a className="button primary" href="#work">
+            <a className="button primary" href="#work" onClick={(event) => handleSectionLinkClick(event, '#work')}>
               View work
             </a>
             <a className="button" href="/max-ceban-cv.pdf" target="_blank" rel="noreferrer">
               Download CV
             </a>
-            <a className="button" href="#contact">
+            <a className="button" href="#contact" onClick={(event) => handleSectionLinkClick(event, '#contact')}>
               Say hello
             </a>
           </motion.div>
@@ -514,7 +596,7 @@ function App() {
               <a className="button primary" href="https://nextplay.up.railway.app/" target="_blank" rel="noreferrer">
                 Open NextPlay
               </a>
-              <a className="button" href="#work">
+              <a className="button" href="#work" onClick={(event) => handleSectionLinkClick(event, '#work')}>
                 View all work
               </a>
             </div>
@@ -635,7 +717,11 @@ function App() {
               whileHover={reduceMotion ? undefined : { y: -6 }}
             >
               <div className={`project-poster poster-${index + 1}`}>
-                <ProjectIllustration index={index} />
+                {'image' in project ? (
+                  <img className="project-screenshot" src={project.image} alt={project.imageAlt} />
+                ) : (
+                  <ProjectIllustration index={index} />
+                )}
                 <span>{project.year}</span>
               </div>
               <div className="project-meta">
@@ -733,7 +819,7 @@ function App() {
       <footer className="site-footer">
         <p>Max Ceban © 2026</p>
         <p>Built with React, Vite, TypeScript, and Motion.</p>
-        <a href="#top">Back to top</a>
+        <a href="#top" onClick={(event) => handleSectionLinkClick(event, '#top')}>Back to top</a>
       </footer>
     </motion.main>
   )

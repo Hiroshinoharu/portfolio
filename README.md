@@ -120,6 +120,7 @@ Current projects:
 
 - NextPlay
 - CNN From Scratch
+- GameCheck
 - MoMA Art Catalogue
 - CKAN ETL Pipeline
 
@@ -259,6 +260,7 @@ The visual style uses:
 - `src/assets/github-pfp.png` is the original larger source image.
 - `src/assets/max.jpeg` is used in the About section.
 - `src/assets/nextplay-screenshot.jpg` is used in the Featured Project section.
+- `src/assets/gamecheck-screenshot.jpg` is used in the GameCheck project card.
 - `public/favicon.png` is the browser favicon.
 - `public/max-ceban-cv.pdf` is linked by the CV download buttons.
 - `public/og-image.svg` is used for social sharing previews.
