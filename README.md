@@ -1,5 +1,7 @@
 # Max Ceban Portfolio
 
+[![CI](https://github.com/Hiroshinoharu/portfolio/actions/workflows/ci.yml/badge.svg)](https://github.com/Hiroshinoharu/portfolio/actions/workflows/ci.yml)
+
 Personal portfolio website built with React, TypeScript, Vite, and CSS. The site presents software, data, and machine learning projects with an anime/cyber-inspired visual style.
 
 ## Tech Stack
