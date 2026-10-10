@@ -4,6 +4,20 @@
 
 Personal portfolio website built with React, TypeScript, Vite, and CSS. The site presents software, data, and machine learning projects with an anime/cyber-inspired visual style.
 
+## NextPlay Case Study
+
+**2026 · Full-stack development & machine learning**
+
+**Goal:** Deliver personalised game recommendations from user interaction data.
+
+**My contribution:** Built the React and Vite frontend and connected Go and FastAPI services around the recommendation workflow. Used PostgreSQL to store interaction data and Keras models to produce personalised recommendations. Containerised the system with Docker, with Kubernetes-oriented deployment considerations.
+
+**Technical approach:** The platform brings together a user interface, Go core services, FastAPI and Keras for ML inference, and PostgreSQL for persistent interaction data.
+
+**Outcome:** Delivered a deployed full-stack recommendation experience, connecting the frontend, backend services, stored data, and ML inference in one application. The project demonstrates practical experience integrating APIs, databases, and machine learning into a user-facing product.
+
+[Open NextPlay](https://nextplay.up.railway.app/) · See the interface screenshot and architecture overview in the portfolio's Featured Project section.
+
 ## Tech Stack
 
 - React
