@@ -1,14 +1,18 @@
 <!doctype html>
+<!-- Static shell: React mounts into #root after the module below loads. -->
 <html lang="en">
   <head>
+    <!-- Encoding, browser-tab icon, and mobile viewport scaling. -->
     <meta charset="UTF-8" />
     <link rel="icon" type="image/png" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Search-engine description; this is metadata, not visible page copy. -->
     <meta
       name="description"
       content="Max Ceban portfolio for software development, data analytics, full-stack projects, machine learning work, and graduate technology opportunities."
     />
     <meta name="author" content="Max Ceban" />
+    <!-- Open Graph fields control the preview when the portfolio is shared. -->
     <meta property="og:title" content="Max Ceban | Software Developer & Data Analyst" />
     <meta
       property="og:description"
@@ -19,6 +23,7 @@
     <meta property="og:image:type" content="image/svg+xml" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
+    <!-- Matching large-image preview fields for Twitter/X-compatible clients. -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Max Ceban | Software Developer & Data Analyst" />
     <meta
@@ -26,10 +31,13 @@
       content="Portfolio featuring full-stack applications, data pipelines, machine learning projects, and professional experience."
     />
     <meta name="twitter:image" content="/og-image.svg" />
+    <!-- Text shown in the browser tab and bookmark title. -->
     <title>Max Ceban | Software Developer & Data Analyst</title>
   </head>
   <body>
+    <!-- React replaces this empty container with the App component. -->
     <div id="root"></div>
+    <!-- Vite compiles this TypeScript module and its imported assets. -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

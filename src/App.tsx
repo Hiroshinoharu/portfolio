@@ -1,6 +1,9 @@
+// React hooks manage state, DOM references, and browser event subscriptions.
 import { useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
+// Component styles sit on top of the global theme in index.css.
 import './App.css'
+// Importing assets lets Vite generate the correct production URLs and cache fingerprints.
 import gameCheckScreenshot from './assets/gamecheck-screenshot.jpg'
 import githubPfp from './assets/github-pfp-small.png'
 import maxPhoto from './assets/max.jpeg'
@@ -13,8 +16,14 @@ import mamboSound from './assets/mambo.mp3'
 import teioImage from './assets/tokai-teio.png'
 import teioSound from './assets/tokai-teio.mp3'
 import operaImage from './assets/tm-opera-o.png'
-import operaSound from './assets/tm-opera-o.mp3'
+// An eight-second song excerpt replaces Opera O's original laugh in both playback paths.
+import operaSound from './assets/tm-opera-o-song.mp3'
+import dotoImage from './assets/meisho-doto.png'
+import dotoSound from './assets/meisho-doto.mp3'
+import kitasanImage from './assets/kitasan-black.png'
+import kitasanSound from './assets/kitasan-black.mp3'
 
+// Course badge content: each object becomes one card in the Journey section.
 const networkingBadges = [
   {
     level: 'CCNA 1',
@@ -120,7 +129,9 @@ const projects = [
   },
 ]
 
+// Short labels shown in the strip directly below the hero.
 const services = ['Software Engineering', 'Data Analysis', 'AI Enthusiast', 'Problem Solver']
+// Make 18 stable column IDs; CSS gives each decorative code stream a different speed.
 const codeRainColumns = Array.from({ length: 18 }, (_, index) => index)
 
 // CV-derived skills used by the Tech Stack section.
@@ -143,6 +154,7 @@ const skillGroups = [
   },
 ]
 
+// Timeline entries render in this order; dates are display text, not sorting keys.
 const journey = [
   {
     period: '2021 - 2026',
@@ -174,6 +186,7 @@ const journey = [
   },
 ]
 
+// Map full technology names to tiny text badges. Unlisted names fall back to two letters.
 const techIconText: Record<string, string> = {
   React: 'Re',
   Vite: 'V',
@@ -213,6 +226,7 @@ const techIconText: Record<string, string> = {
 
 // Lightweight SVG poster art for each project card, selected by project index.
 function ProjectIllustration({ index }: { readonly index: number }) {
+  // Connected services and a chart represent the recommendation platform.
   if (index === 0) {
     return (
       <svg className="project-illustration" viewBox="0 0 320 210" aria-hidden="true">
@@ -227,6 +241,7 @@ function ProjectIllustration({ index }: { readonly index: number }) {
     )
   }
 
+  // Circles and connecting paths suggest layers of a neural network.
   if (index === 1) {
     return (
       <svg className="project-illustration" viewBox="0 0 320 210" aria-hidden="true">
@@ -244,6 +259,7 @@ function ProjectIllustration({ index }: { readonly index: number }) {
     )
   }
 
+  // Browser-like panels are a fallback illustration for the web project.
   if (index === 2) {
     return (
       <svg className="project-illustration" viewBox="0 0 320 210" aria-hidden="true">
@@ -257,6 +273,7 @@ function ProjectIllustration({ index }: { readonly index: number }) {
     )
   }
 
+  // All remaining project indices use the shared data-pipeline illustration.
   return (
     <svg className="project-illustration" viewBox="0 0 320 210" aria-hidden="true">
       <rect className="svg-panel" x="34" y="72" width="70" height="54" rx="8" />
@@ -299,6 +316,8 @@ const socials = [
   },
 ]
 
+// Shared source for both navigation menus and scroll-based active-section detection.
+// Each href must match the id of a section further down in this file.
 const navLinks = [
   { href: '#top', label: 'Home' },
   { href: '#about', label: 'About' },
@@ -310,6 +329,7 @@ const navLinks = [
   { href: '#contact', label: 'Contact' },
 ]
 
+// Ordered architecture steps used in the featured project diagram.
 const nextPlayFlow = [
   { label: 'React + Vite', detail: 'User interface' },
   { label: 'Go API', detail: 'Core services' },
@@ -317,11 +337,13 @@ const nextPlayFlow = [
   { label: 'PostgreSQL', detail: 'Interaction data' },
 ]
 
+// Motion variants are named animation states. Sections reveal their children on entry.
 const reveal = {
   hidden: { opacity: 0, y: 24, filter: 'blur(4px)' },
   visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
 }
 
+// A parent using this variant starts each child 80 milliseconds after the previous one.
 const stagger = {
   hidden: {},
   visible: {
@@ -331,30 +353,50 @@ const stagger = {
   },
 }
 
-function CharacterSurprise({ name, caption, image, sound, width, height, variant, activeAudioRef }: {
+// Reusable character tile: its own audio and replay counter, coordinated with the others.
+// readonly props describe the inputs; the shared RefObject tracks whichever audio is playing.
+type CharacterVariant = 'mambo' | 'teio' | 'kitasan' | 'opera' | 'doto'
+// The sequence and per-character buttons use the same IDs to synchronize sound and movement.
+const characterOrder: readonly CharacterVariant[] = ['mambo', 'teio', 'kitasan', 'opera', 'doto']
+
+function CharacterSurprise({ name, caption, image, sound, width, height, variant, activeAudioRef, performing, onPerform }: {
   readonly name: string
   readonly caption: string
   readonly image: string
-  readonly sound: string
+  readonly sound?: string
   readonly width: number
   readonly height: number
-  readonly variant: 'mambo' | 'teio' | 'opera'
+  readonly variant: CharacterVariant
   readonly activeAudioRef: RefObject<HTMLAudioElement | null>
+  readonly performing: boolean
+  readonly onPerform: (character: CharacterVariant | null) => void
 }) {
+  // Refs retain DOM objects without causing renders. State updates refresh visible UI.
   const audioRef = useRef<HTMLAudioElement>(null)
+  // Changing a React key remounts the animated span, restarting its CSS animation.
   const [take, setTake] = useState(0)
   const [soundError, setSoundError] = useState(false)
+  // Called directly from a click so browser audio policies allow playback.
   const play = () => {
     setTake((value) => value + 1)
     const audio = audioRef.current
     if (!audio) return
+    // Interrupt any other character or the automatic sequence before replaying this one.
     if (activeAudioRef.current && activeAudioRef.current !== audio) {
       activeAudioRef.current.pause()
       activeAudioRef.current.currentTime = 0
     }
+    // A character without a confirmed voice clip can still replay her visual animation.
+    if (!sound) {
+      activeAudioRef.current = null
+      onPerform(variant)
+      return
+    }
     activeAudioRef.current = audio
     audio.pause()
+    // Rewind rather than layering another copy of the same sound.
     audio.currentTime = 0
+    // A moderate default volume keeps the surprise from being too loud.
     audio.volume = 0.5
     setSoundError(false)
     void audio.play().catch((error: unknown) => {
@@ -364,33 +406,75 @@ function CharacterSurprise({ name, caption, image, sound, width, height, variant
   }
 
   return (
-      <div className={`uma-surprise ${variant}-easter-egg`}>
-        <p className="mambo-caption" key={`caption-${take}`}>{caption}</p>
-        <button className="mambo-replay" type="button" onClick={play} aria-label={`Replay ${name} dance and sound`} title={`${caption} Again!`}>
-          <span className="mambo-performance" key={take}>
-            <img className="mambo-character" src={image} alt={`${name} striking a cheerful pose`} width={width} height={height} loading="lazy" />
-            <span className="mambo-sparkle sparkle-left" aria-hidden="true">✦</span>
-            <span className="mambo-sparkle sparkle-right" aria-hidden="true">♪</span>
-          </span>
-        </button>
-        <audio ref={audioRef} src={sound} preload="none" />
-        {soundError && <p role="status">Sound couldn’t play. Tap her to retry.</p>}
-      </div>
+    <div className={`uma-surprise ${variant}-easter-egg${performing ? ' is-performing' : ''}`}>
+      <p className="mambo-caption" key={`caption-${take}`}>{caption}</p>
+      <button className="mambo-replay" type="button" onClick={play} aria-label={`Replay ${name} dance${sound ? ' and sound' : ''}`} title={`${caption} Again!`}>
+        <span className="mambo-performance" key={take}>
+          <img className="mambo-character" src={image} alt={`${name} striking a cheerful pose`} width={width} height={height} loading="lazy" onAnimationEnd={() => {
+            if (!sound) onPerform(null)
+          }} />
+          <span className="mambo-sparkle sparkle-left" aria-hidden="true">✦</span>
+          <span className="mambo-sparkle sparkle-right" aria-hidden="true">♪</span>
+        </span>
+      </button>
+      {/* Download the voice only when needed; the element is controlled by play(). */}
+      {/* Dance while audio is actually playing, including after an image finishes loading. */}
+      <audio ref={audioRef} src={sound} preload="none"
+        onPlaying={() => onPerform(variant)}
+        onPause={() => {
+          if (activeAudioRef.current === audioRef.current) onPerform(null)
+        }}
+        onEnded={() => {
+          if (activeAudioRef.current === audioRef.current) onPerform(null)
+        }}
+      />
+      {soundError && <p role="status">Sound couldn’t play. Tap her to retry.</p>}
+    </div>
   )
 }
 
+// Page owner: theme, navigation, scrolling, and the automatic character sound sequence.
 function App() {
+  // All playback paths share this ref, ensuring only one voice plays at a time.
   const activeCharacterAudio = useRef<HTMLAudioElement>(null)
+  // Movement follows real playback rather than starting once while images may still be loading.
+  const [performingCharacter, setPerformingCharacter] = useState<CharacterVariant | null>(null)
+  // Reuse one audio element for the opening sequence; each ended event advances its source.
+  const surpriseAudioRef = useRef<HTMLAudioElement>(null)
+  // The current sequence index needs persistence, but does not affect the visible page.
+  const surpriseClipRef = useRef(0)
+  const [surpriseSoundError, setSurpriseSoundError] = useState(false)
+  // Opening the carrot starts at index 0; reaching past the last clip naturally stops.
+  const playSurpriseClip = (index: number) => {
+    const audio = surpriseAudioRef.current
+    const clip = [mamboSound, teioSound, kitasanSound, operaSound, dotoSound][index]
+    // Also guard against a missing DOM element before React has mounted the page.
+    if (!audio || !clip) return
+    surpriseClipRef.current = index
+    activeCharacterAudio.current = audio
+    audio.src = clip
+    audio.volume = 0.5
+    setSurpriseSoundError(false)
+    void audio.play().catch((error: unknown) => {
+      if (!(error instanceof DOMException && error.name === 'AbortError')) setSurpriseSoundError(true)
+    })
+  }
+  // Closing the reveal rewinds playback and clears ownership to cancel late ended events.
   const stopCharacterAudio = () => {
+    setPerformingCharacter(null)
     if (activeCharacterAudio.current) {
       activeCharacterAudio.current.pause()
       activeCharacterAudio.current.currentTime = 0
+      activeCharacterAudio.current = null
     }
   }
+  // These state values control the mobile menu, progress bar, and highlighted section link.
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [activeSection, setActiveSection] = useState(navLinks[0].href)
+  // Respect the operating system preference when choosing Motion animations and scrolling.
   const reduceMotion = useReducedMotion()
+  // Lazy initialization runs once: prefer the saved choice, otherwise use the OS theme.
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const storedTheme = window.localStorage.getItem('portfolio-theme')
 
@@ -401,18 +485,23 @@ function App() {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
 
+  // The data-theme attribute selects CSS variables; localStorage remembers the choice.
   useEffect(() => {
     document.documentElement.dataset.theme = theme
     window.localStorage.setItem('portfolio-theme', theme)
   }, [theme])
 
+  // Subscribe once to page movement and viewport changes, and clean up on unmount.
   useEffect(() => {
     const sectionIds = navLinks.map((link) => link.href.replace('#', ''))
 
     const updateScrollState = () => {
+      // Divide by the distance the document can actually scroll (not its full height).
       const scrollableHeight = document.documentElement.scrollHeight - window.innerHeight
       const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0
+      // A section becomes active when its top crosses 32% of the viewport height.
       const activationLine = window.innerHeight * 0.32
+      // Walk from top to bottom and keep the last section that crossed that line.
       const currentSection = sectionIds.reduce((current, sectionId) => {
         const section = document.getElementById(sectionId)
 
@@ -423,15 +512,18 @@ function App() {
         return section.getBoundingClientRect().top <= activationLine ? `#${sectionId}` : current
       }, navLinks[0].href)
 
+      // Clamp overscroll values to keep the progress bar between empty and full.
       setScrollProgress(Math.min(Math.max(progress, 0), 1))
       setActiveSection(currentSection)
     }
 
+    // Set the initial values too, including when a page opens at an anchor.
     updateScrollState()
     window.addEventListener('scroll', updateScrollState, { passive: true })
     window.addEventListener('resize', updateScrollState)
     window.addEventListener('hashchange', updateScrollState)
 
+    // Cleanup prevents duplicate subscriptions during remounts and development StrictMode.
     return () => {
       window.removeEventListener('scroll', updateScrollState)
       window.removeEventListener('resize', updateScrollState)
@@ -439,8 +531,11 @@ function App() {
     }
   }, [])
 
+  // Button labels describe the theme that clicking will activate.
   const nextTheme = theme === 'light' ? 'dark' : 'light'
+  // Reuse one transition throughout the page; reduced motion makes reveals immediate.
   const revealTransition = reduceMotion ? { duration: 0 } : { duration: 0.45, ease: 'easeOut' as const }
+  // Close the mobile menu before scrolling so its height does not shift the target.
   const handleMobileNavClick = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
     const target = document.getElementById(href.replace('#', ''))
 
@@ -448,11 +543,13 @@ function App() {
       return
     }
 
+    // Replace the default anchor jump with controlled scrolling and a URL hash update.
     event.preventDefault()
     setIsMenuOpen(false)
     setActiveSection(href)
     window.history.pushState(null, '', href)
 
+    // Let React apply the closed menu before measuring the destination for scrolling.
     window.setTimeout(() => {
       target.scrollIntoView({
         behavior: reduceMotion ? 'auto' : 'smooth',
@@ -468,9 +565,11 @@ function App() {
       animate={reduceMotion ? undefined : { opacity: 1 }}
       transition={{ duration: 0.35 }}
     >
+      {/* Decorative reading progress: scaleX runs from 0 to 1 as the user scrolls. */}
       <div className="scroll-progress" aria-hidden="true">
         <span style={{ transform: `scaleX(${scrollProgress})` }} />
       </div>
+      {/* Header: shared nav data, a mobile disclosure, and a saved light/dark toggle. */}
       <motion.header
         className="topbar"
         aria-label="Primary navigation"
@@ -509,6 +608,7 @@ function App() {
             </a>
           ))}
         </nav>
+        {/* AnimatePresence keeps the disappearing menu mounted long enough to animate out. */}
         <AnimatePresence initial={false}>
           {isMenuOpen ? (
             <motion.nav
@@ -547,6 +647,7 @@ function App() {
         </button>
       </motion.header>
 
+      {/* Intro and calls to action. Motion children inherit reveal states from their parent. */}
       <section className="hero" id="top">
         <motion.div
           className="hero-copy"
@@ -573,6 +674,7 @@ function App() {
           </motion.div>
         </motion.div>
 
+        {/* The hero illustration is built from CSS shapes, not a downloaded character image. */}
         <motion.div
           className="hero-art"
           aria-label="Anime-inspired portfolio panel"
@@ -616,6 +718,7 @@ function App() {
         </motion.div>
       </section>
 
+      {/* Mapping the service array keeps the four introductory labels consistent. */}
       <section className="marquee" aria-label="Services">
         {services.map((service) => (
           <motion.span
@@ -630,6 +733,7 @@ function App() {
         ))}
       </section>
 
+      {/* About: portrait and personal introduction. viewport.once prevents repeat reveals. */}
       <motion.section
         className="section split"
         id="about"
@@ -657,6 +761,7 @@ function App() {
         </motion.div>
       </motion.section>
 
+      {/* Internship case study with responsibilities, technologies, and impact figures. */}
       <motion.section
         className="section experience-section"
         id="experience"
@@ -705,6 +810,7 @@ function App() {
         </motion.article>
       </motion.section>
 
+      {/* Featured work: NextPlay summary, live link, screenshot, and architecture diagram. */}
       <motion.section
         className="section featured-project"
         id="featured"
@@ -770,6 +876,7 @@ function App() {
         </motion.div>
       </motion.section>
 
+      {/* Timeline and Cisco course badges are rendered from the data arrays above. */}
       <motion.section
         className="section journey-section"
         id="journey"
@@ -799,6 +906,7 @@ function App() {
             </motion.article>
           ))}
         </div>
+        {/* The badge image link opens the original asset without creating another page. */}
         <div className="networking-badges" aria-labelledby="networking-heading">
           <motion.div className="section-heading" variants={reveal} transition={revealTransition}>
             <p className="eyebrow">Cisco Networking Academy</p>
@@ -826,6 +934,7 @@ function App() {
         </div>
       </motion.section>
 
+      {/* Skills are grouped into cards; the icon text lookup supplies the small badges. */}
       <motion.section
         className="section stack-section"
         id="stack"
@@ -861,6 +970,7 @@ function App() {
         </div>
       </motion.section>
 
+      {/* Selected Work: one card per project, with optional screenshot and repository link. */}
       <motion.section
         className="section"
         id="work"
@@ -884,6 +994,7 @@ function App() {
               whileHover={reduceMotion ? undefined : { y: -6 }}
             >
               <div className={`project-poster poster-${index + 1}`}>
+                {/* Some projects have a screenshot; others use the SVG illustration fallback. */}
                 {'image' in project ? (
                   <img className="project-screenshot" src={project.image} alt={project.imageAlt} />
                 ) : (
@@ -915,6 +1026,7 @@ function App() {
                   </span>
                 ))}
               </div>
+              {/* Confidential projects show a note instead of a nonfunctional repository link. */}
               {'projectUrl' in project ? (
                 <a
                   className="project-link"
@@ -935,6 +1047,7 @@ function App() {
         </div>
       </motion.section>
 
+      {/* Contact: mailto links open the visitor’s email app; external links open new tabs. */}
       <motion.section
         className="section contact"
         id="contact"
@@ -983,6 +1096,7 @@ function App() {
         </div>
       </motion.section>
 
+      {/* Credits and a native details/summary disclosure that works with touch and keyboard. */}
       <footer className="site-footer">
         <p>Max Ceban © 2026</p>
         <p>Built with React, Vite, TypeScript, and Motion.</p>
@@ -990,11 +1104,30 @@ function App() {
         <details className="uma-easter-egg" onToggle={(event) => {
           if (!event.currentTarget.open) stopCharacterAudio()
         }}>
-          <summary aria-label="A little carrot surprise" title="A little carrot surprise" onClick={stopCharacterAudio}>🥕</summary>
+          <summary aria-label="A little carrot surprise" title="A little carrot surprise" onClick={(event) => {
+            stopCharacterAudio()
+            if (!event.currentTarget.parentElement?.hasAttribute('open')) playSurpriseClip(0)
+          }}>🥕</summary>
+          {/* Continue only if this sequence still owns playback; manual replay takes ownership. */}
+          <audio ref={surpriseAudioRef} preload="none"
+            onPlaying={() => setPerformingCharacter(characterOrder[surpriseClipRef.current] ?? null)}
+            onPause={() => {
+              if (activeCharacterAudio.current === surpriseAudioRef.current) setPerformingCharacter(null)
+            }}
+            onEnded={() => {
+            if (activeCharacterAudio.current === surpriseAudioRef.current) {
+              setPerformingCharacter(null)
+              playSurpriseClip(surpriseClipRef.current + 1)
+            }
+          }} />
+          {surpriseSoundError && <p role="status">Sound couldn’t play. Tap a character to retry.</p>}
+          {/* Adding a character also requires adding its voice to playSurpriseClip’s ordered list. */}
           <div className="uma-secrets">
-            <CharacterSurprise name="Mambo" caption="Mambo!" image={mamboImage} sound={mamboSound} width={1125} height={1640} variant="mambo" activeAudioRef={activeCharacterAudio} />
-            <CharacterSurprise name="Tokai Teio" caption="Hachimi!" image={teioImage} sound={teioSound} width={340} height={438} variant="teio" activeAudioRef={activeCharacterAudio} />
-            <CharacterSurprise name="T.M. Opera O" caption="Ha-ha-ha!" image={operaImage} sound={operaSound} width={1125} height={1613} variant="opera" activeAudioRef={activeCharacterAudio} />
+            <CharacterSurprise name="Mambo" caption="Mambo!" image={mamboImage} sound={mamboSound} width={1125} height={1640} variant="mambo" activeAudioRef={activeCharacterAudio} performing={performingCharacter === 'mambo'} onPerform={setPerformingCharacter} />
+            <CharacterSurprise name="Tokai Teio" caption="Hachimi!" image={teioImage} sound={teioSound} width={340} height={438} variant="teio" activeAudioRef={activeCharacterAudio} performing={performingCharacter === 'teio'} onPerform={setPerformingCharacter} />
+            <CharacterSurprise name="Kitasan Black" caption="Harikitte Ikou!" image={kitasanImage} sound={kitasanSound} width={1125} height={1980} variant="kitasan" activeAudioRef={activeCharacterAudio} performing={performingCharacter === 'kitasan'} onPerform={setPerformingCharacter} />
+            <CharacterSurprise name="T.M. Opera O" caption="Encore! ♪" image={operaImage} sound={operaSound} width={1125} height={1613} variant="opera" activeAudioRef={activeCharacterAudio} performing={performingCharacter === 'opera'} onPerform={setPerformingCharacter} />
+            <CharacterSurprise name="Meisho Doto" caption="Doto desu!" image={dotoImage} sound={dotoSound} width={183} height={498} variant="doto" activeAudioRef={activeCharacterAudio} performing={performingCharacter === 'doto'} onPerform={setPerformingCharacter} />
           </div>
         </details>
       </footer>
@@ -1002,4 +1135,5 @@ function App() {
   )
 }
 
+// main.tsx imports this component and mounts it into index.html’s root element.
 export default App

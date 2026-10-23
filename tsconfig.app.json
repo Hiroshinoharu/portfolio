@@ -1,26 +1,44 @@
 {
   "compilerOptions": {
+    // Store incremental compiler cache with dependencies, not application source.
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    // Use modern JavaScript syntax as the type-checking target.
     "target": "es2023",
+    // Select available standard APIs: browser DOM for the app, ES APIs for tooling.
     "lib": ["ES2023", "DOM"],
+    // Use the module system appropriate to this build target.
     "module": "esnext",
+    // Load environment-specific type declarations (Vite assets or Node tools).
     "types": ["vite/client"],
+    // Allow asset/style module extension handling supplied by the build tooling.
     "allowArbitraryExtensions": true,
+    // Skip checking dependency declaration files to speed up project checks.
     "skipLibCheck": true,
 
     /* Bundler mode */
+    // Resolve imports using the bundler rather than a standalone runtime.
     "moduleResolution": "bundler",
+    // Permit explicit .ts and .tsx extensions in source imports.
     "allowImportingTsExtensions": true,
+    // Keep runtime imports distinct from type-only imports.
     "verbatimModuleSyntax": true,
+    // Treat every source file as a module to avoid accidental global declarations.
     "moduleDetection": "force",
+    // Only check types; Vite is responsible for generating JavaScript.
     "noEmit": true,
+    // Use the modern React JSX transform for markup in .tsx files.
     "jsx": "react-jsx",
 
     /* Linting */
+    // Report local variables/imports that are never used.
     "noUnusedLocals": true,
+    // Report unused function parameters.
     "noUnusedParameters": true,
+    // Allow TypeScript constructs that disappear cleanly when compiling JavaScript.
     "erasableSyntaxOnly": true,
+    // Require explicit control flow between nonempty switch cases.
     "noFallthroughCasesInSwitch": true
   },
+  // Select the files this configuration checks.
   "include": ["src"]
 }

@@ -1,5 +1,7 @@
 {
+  // This file coordinates two projects instead of compiling source itself.
   "files": [],
+  // tsc -b checks browser code and Vite configuration using their own settings.
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }

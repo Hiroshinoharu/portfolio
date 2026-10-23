@@ -1,9 +1,14 @@
+/* Component styles for App.tsx. Colors come from index.css; later media queries override desktop rules.
+   ::before/::after draw decoration. minmax(0, ...) allows grid content to shrink without overflow. */
+
+/* Page container: cap desktop width, keep side gutters, and fill at least one screen. */
 .site-shell {
   width: min(1180px, calc(100% - 28px));
   margin: 0 auto;
   min-height: 100svh;
 }
 
+/* Fixed reading-progress track. It ignores pointer input so links beneath remain clickable. */
 .scroll-progress {
   position: fixed;
   top: 0;
@@ -15,6 +20,7 @@
   pointer-events: none;
 }
 
+/* App.tsx sets scaleX to the scroll fraction; the left edge stays anchored. */
 .scroll-progress span {
   display: block;
   width: 100%;
@@ -26,6 +32,7 @@
   transition: transform 120ms linear;
 }
 
+/* Desktop header lays out the logo, navigation, and theme button in one row. */
 .topbar {
   display: flex;
   align-items: center;
@@ -35,6 +42,7 @@
   border-bottom: 1px solid var(--ink);
 }
 
+/* Square logo with an ink border and a cyan offset shadow. */
 .brand {
   flex-shrink: 0;
   display: grid;
@@ -58,6 +66,7 @@
   object-fit: cover;
 }
 
+/* Navigation spacing; hover, keyboard focus, and active links share a visible treatment. */
 .topbar nav {
   display: flex;
   align-items: center;
@@ -91,10 +100,12 @@
   box-shadow: 3px 3px 0 var(--cyan);
 }
 
+/* Mobile navigation stays hidden until a narrow-screen media query enables it. */
 .mobile-nav {
   display: none;
 }
 
+/* Touch-sized hamburger button. Its span and pseudo-elements draw three bars. */
 .menu-toggle {
   display: none;
   width: 44px;
@@ -148,6 +159,7 @@
   transform: translate(3px, 3px);
 }
 
+/* The aria-expanded attribute changes the bars into a close icon when the menu is open. */
 .menu-toggle[aria-expanded='true'] span {
   transform: rotate(45deg);
 }
@@ -161,6 +173,7 @@
   transform: translateY(-7px);
 }
 
+/* Theme control and compact mode badge; actual colors come from index.css variables. */
 .theme-toggle {
   flex-shrink: 0;
   display: inline-flex;
@@ -199,6 +212,7 @@
   transform: translate(3px, 3px);
 }
 
+/* Main intro grid: text beside artwork on wide screens; a later breakpoint stacks them. */
 .hero {
   position: relative;
   display: grid;
@@ -211,6 +225,7 @@
   border-bottom: 1px solid var(--ink);
 }
 
+/* A decorative crosshatched square, positioned relative to the hero rather than document flow. */
 .hero::before {
   position: absolute;
   top: 54px;
@@ -234,6 +249,7 @@
   min-width: 0;
 }
 
+/* Small uppercase labels reused above section headings. */
 .eyebrow {
   margin: 0 0 16px;
   color: var(--red);
@@ -244,6 +260,7 @@
   text-transform: uppercase;
 }
 
+/* Shared heading reset. clamp() below scales font sizes within readable minimum/maximum limits. */
 h1,
 h2,
 h3 {
@@ -264,6 +281,7 @@ h1::first-line {
   color: var(--red);
 }
 
+/* Job title styling beneath the large name. */
 .role-title {
   width: fit-content;
   margin: 20px 0 0;
@@ -294,6 +312,7 @@ h3 {
   line-height: 0.96;
 }
 
+/* Limit introduction line length for comfortable reading. */
 .intro {
   max-width: 520px;
   margin: 22px 0 0;
@@ -302,6 +321,7 @@ h3 {
   line-height: 1.6;
 }
 
+/* Allow call-to-action buttons to wrap rather than overflow their container. */
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
@@ -309,6 +329,7 @@ h3 {
   margin-top: 32px;
 }
 
+/* Shared link-as-button style. Focus gets the same tactile shadow change as hover. */
 .button {
   display: inline-flex;
   min-height: 46px;
@@ -340,6 +361,7 @@ h3 {
   color: var(--soft);
 }
 
+/* Reserve space for the layered comic panels and CSS-drawn figure. */
 .hero-art {
   position: relative;
   justify-self: end;
@@ -347,6 +369,7 @@ h3 {
   min-height: 560px;
 }
 
+/* Shared absolute positioning and borders for the three overlapping hero panels. */
 .panel {
   position: absolute;
   border: 3px solid var(--ink);
@@ -361,6 +384,7 @@ h3 {
   transform: skew(-4deg);
 }
 
+/* Pseudo-elements add texture and framing without adding meaningful HTML content. */
 .panel-large::before {
   position: absolute;
   inset: 0;
@@ -399,6 +423,7 @@ h3 {
     8px 8px 0 var(--ink);
 }
 
+/* Clip falling code inside the large panel; decorative layers never intercept clicks. */
 .code-rain {
   position: absolute;
   inset: 0;
@@ -409,6 +434,7 @@ h3 {
   pointer-events: none;
 }
 
+/* Each empty span becomes one vertical code stream through its generated text. */
 .code-rain span {
   position: absolute;
   top: -140%;
@@ -432,6 +458,7 @@ h3 {
   content: 'アイウエオカキクケコ010101DEVUIデータAI';
 }
 
+/* Per-column position, duration, and negative delay keep the 18 streams from moving in sync. */
 .code-rain span:nth-child(1) {
   left: 4%;
   animation-delay: -3.5s;
@@ -540,6 +567,7 @@ h3 {
   animation-duration: 22s;
 }
 
+/* Move a code column vertically through its container over one animation cycle. */
 @keyframes code-fall {
   from {
     transform: translateY(-8%);
@@ -550,6 +578,7 @@ h3 {
   }
 }
 
+/* Accessibility: stop decorative hero animation when the visitor requests less motion. */
 @media (prefers-reduced-motion: reduce) {
   .scroll-progress span {
     transition: none;
@@ -561,6 +590,7 @@ h3 {
   }
 }
 
+/* Three slanted strokes give the hero panel a comic-book sense of speed. */
 .speedline {
   position: absolute;
   z-index: 3;
@@ -591,6 +621,7 @@ h3 {
   transform: rotate(-16deg);
 }
 
+/* Anchor the CSS character inside the hero; all body parts are positioned relative to it. */
 .banner-man {
   position: absolute;
   left: 15%;
@@ -601,13 +632,16 @@ h3 {
   transform: skew(4deg) rotate(-4deg);
 }
 
+/* Shared outlines give separately drawn body parts a consistent silhouette. */
 .man-head,
 .man-body,
+/* Rotate the two arm shapes independently to create the pose. */
 .man-arm {
   position: absolute;
   border: 4px solid var(--ink);
 }
 
+/* Head shape, shading, and pseudo-element details form the face and hair. */
 .man-head {
   top: 0;
   left: 50%;
@@ -645,6 +679,7 @@ h3 {
   transform: rotate(28deg);
 }
 
+/* A slanted visor, headset, eyes, and mouth complete the face without an image asset. */
 .visor {
   position: absolute;
   left: 28px;
@@ -704,6 +739,7 @@ h3 {
   border-radius: 0 0 999px 999px;
 }
 
+/* Polygon clipping makes the jacket silhouette from a rectangular element. */
 .man-body {
   left: 42px;
   bottom: 0;
@@ -737,6 +773,7 @@ h3 {
   transform: rotate(-34deg);
 }
 
+/* A narrow glowing rectangle forms the diagonal energy blade. */
 .energy-blade {
   position: absolute;
   left: 182px;
@@ -752,6 +789,7 @@ h3 {
   transform: rotate(34deg);
 }
 
+/* Secondary panel places a numbered design label over the main illustration. */
 .panel-small {
   right: 0;
   top: 0;
@@ -780,6 +818,7 @@ h3 {
   line-height: 0.9;
 }
 
+/* Bottom strip uses three differently clipped spans as abstract poster art. */
 .panel-strip {
   right: 18px;
   bottom: 0;
@@ -813,6 +852,7 @@ h3 {
     var(--soft);
 }
 
+/* Four service labels form a horizontal strip; phones switch to two columns. */
 .marquee {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -843,12 +883,14 @@ h3 {
   border-right: 0;
 }
 
+/* Consistent section spacing and anchor scroll offset across the page. */
 .section {
   scroll-margin-top: 84px;
   padding: clamp(58px, 9vw, 112px) 0;
   border-bottom: 1px solid var(--ink);
 }
 
+/* About and Contact share a two-column layout before stacking on smaller screens. */
 .split,
 .contact {
   display: grid;
@@ -857,11 +899,13 @@ h3 {
   align-items: start;
 }
 
+/* Group the portrait and introduction within the About column. */
 .about-panel {
   display: grid;
   gap: 18px;
 }
 
+/* Framed portrait: pseudo-elements add a print texture and a cyan offset edge. */
 .about-photo {
   position: relative;
   width: min(340px, 100%);
@@ -896,6 +940,7 @@ h3 {
   content: '';
 }
 
+/* Fill the portrait frame and crop extra image area instead of stretching the photo. */
 .about-photo img {
   width: 100%;
   height: 100%;
@@ -905,6 +950,7 @@ h3 {
   filter: saturate(0.92) contrast(1.06);
 }
 
+/* Readable biography text with a colored left border and a subtle panel background. */
 .about-copy {
   display: grid;
   gap: 18px;
@@ -920,6 +966,7 @@ h3 {
   margin: 0;
 }
 
+/* Internship layout: overview and impact numbers beside responsibilities on desktop. */
 .experience-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
@@ -956,6 +1003,7 @@ h3 {
   line-height: 1.65;
 }
 
+/* Definition-list pairs keep each numerical achievement associated with its label. */
 .experience-impact {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -980,10 +1028,12 @@ h3 {
   font-size: 1.2rem;
 }
 
-.experience-details .project-note {
+.experience-details /* Use the same visual language for a confidentiality note when a public link is unavailable. */
+.project-note {
   margin-top: 26px;
 }
 
+/* Separate Cisco learning badges from the timeline above them. */
 .networking-badges {
   margin-top: clamp(48px, 7vw, 88px);
 }
@@ -998,12 +1048,14 @@ h3 {
   line-height: 1.65;
 }
 
+/* Three course cards on desktop; later queries use two columns on tablets and one on phones. */
 .badge-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 24px;
 }
 
+/* Course card borders, padding, and shadow match the rest of the portfolio. */
 .badge-card {
   min-width: 0;
   padding: clamp(18px, 2.5vw, 28px);
@@ -1012,6 +1064,7 @@ h3 {
   box-shadow: 5px 5px 0 var(--ink);
 }
 
+/* Keep square badge images readable without allowing them to stretch beyond their cards. */
 .badge-image-link {
   display: block;
   width: min(100%, 220px);
@@ -1019,6 +1072,7 @@ h3 {
   border-radius: 18px;
 }
 
+/* Show a strong keyboard-focus outline when a badge image link is selected. */
 .badge-image-link:focus-visible {
   outline: 3px solid var(--red);
   outline-offset: 6px;
@@ -1036,6 +1090,7 @@ h3 {
   line-height: 1.35;
 }
 
+/* Course topics wrap like tags; remove normal list bullets and indentation. */
 .badge-skills {
   display: flex;
   flex-wrap: wrap;
@@ -1050,6 +1105,7 @@ h3 {
   margin-top: 28px;
 }
 
+/* Relative container for the alternating timeline and its central vertical line. */
 .journey-tree {
   position: relative;
   display: grid;
@@ -1058,6 +1114,7 @@ h3 {
   margin: 0 auto;
 }
 
+/* Draw the dashed red/ink timeline behind its circular markers. */
 .journey-tree::before {
   position: absolute;
   top: 8px;
@@ -1070,6 +1127,7 @@ h3 {
   transform: translateX(-50%);
 }
 
+/* Three columns place alternating cards around the central marker; odd/even rules choose sides. */
 .journey-node {
   position: relative;
   display: grid;
@@ -1077,7 +1135,8 @@ h3 {
   align-items: center;
 }
 
-.journey-node:nth-child(odd) .journey-card {
+.journey-node:nth-child(odd) /* Timeline cards use a dotted paper background and a hard offset shadow. */
+.journey-card {
   grid-column: 1;
 }
 
@@ -1085,6 +1144,7 @@ h3 {
   grid-column: 3;
 }
 
+/* The marker sits above the line using z-index, preserving a continuous timeline effect. */
 .journey-marker {
   position: relative;
   z-index: 1;
@@ -1110,6 +1170,7 @@ h3 {
   box-shadow: 6px 6px 0 var(--ink);
 }
 
+/* A short horizontal connector joins each card to the central timeline. */
 .journey-card::after {
   position: absolute;
   top: 50%;
@@ -1127,6 +1188,7 @@ h3 {
   left: -36px;
 }
 
+/* Wrap period and entry type when the available card width is limited. */
 .journey-meta {
   display: flex;
   flex-wrap: wrap;
@@ -1161,6 +1223,7 @@ h3 {
   line-height: 1.65;
 }
 
+/* Cap section-title line length and separate titles from their content. */
 .section-heading {
   max-width: 830px;
   margin-bottom: 36px;
@@ -1170,6 +1233,7 @@ h3 {
   position: relative;
 }
 
+/* NextPlay case study layout: explanatory copy beside screenshot and architecture. */
 .featured-grid {
   display: grid;
   grid-template-columns: minmax(0, 0.95fr) minmax(320px, 0.8fr);
@@ -1177,7 +1241,9 @@ h3 {
   align-items: stretch;
 }
 
+/* Both featured panels share the same border, surface, and shadow treatment. */
 .featured-copy,
+/* Stack the screenshot and architecture diagram inside the media panel. */
 .featured-media {
   min-width: 0;
   border: 2px solid var(--ink);
@@ -1216,6 +1282,7 @@ h3 {
   line-height: 1.65;
 }
 
+/* Custom diamond bullets replace the browser’s default list markers. */
 .featured-list {
   display: grid;
   gap: 10px;
@@ -1257,6 +1324,7 @@ h3 {
   padding: 14px;
 }
 
+/* Crop the screenshot to its frame and overlay a caption at the lower-left corner. */
 .nextplay-preview {
   position: relative;
   margin: 0;
@@ -1288,6 +1356,7 @@ h3 {
   text-transform: uppercase;
 }
 
+/* Dark frame for the architecture diagram; its pseudo-element provides noninteractive texture. */
 .architecture-card {
   position: relative;
   padding: 18px;
@@ -1309,6 +1378,7 @@ h3 {
   pointer-events: none;
 }
 
+/* Place diagram content above the decorative background using a positioned stacking layer. */
 .architecture-screen {
   position: relative;
   z-index: 1;
@@ -1319,6 +1389,7 @@ h3 {
   border: 2px solid var(--soft);
 }
 
+/* Each architecture step is a bordered service card with number, title, and responsibility. */
 .architecture-node {
   position: relative;
   display: grid;
@@ -1330,6 +1401,7 @@ h3 {
   box-shadow: 5px 5px 0 var(--cyan);
 }
 
+/* Connect every architecture step except the last to the next card below it. */
 .architecture-node:not(:last-child)::after {
   position: absolute;
   right: 24px;
@@ -1362,6 +1434,7 @@ h3 {
   color: var(--muted);
 }
 
+/* Four skill groups span the desktop width and become a vertical list on narrow screens. */
 .stack-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -1384,18 +1457,21 @@ h3 {
   font-size: clamp(1.45rem, 3vw, 2.2rem);
 }
 
+/* Wrap skill chips as needed, allowing each card to grow with its contents. */
 .stack-list {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
+/* Selected Work displays two columns on desktop and one below the tablet breakpoint. */
 .project-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 18px;
 }
 
+/* Card grid aligns content to the top while allowing descriptions of different lengths. */
 .project-card {
   display: grid;
   gap: 16px;
@@ -1407,6 +1483,7 @@ h3 {
   align-content: start;
 }
 
+/* Framed project artwork area with a paper texture; clips oversized artwork. */
 .project-poster {
   position: relative;
   min-height: 250px;
@@ -1419,6 +1496,7 @@ h3 {
   background-size: 18px 18px, 100% 100%, 100% 100%;
 }
 
+/* Inset SVG artwork inside the poster while preserving its coordinate system. */
 .project-illustration {
   position: absolute;
   inset: 14px;
@@ -1426,6 +1504,7 @@ h3 {
   height: calc(100% - 28px);
 }
 
+/* Real screenshots fill their poster area with cropping rather than distortion. */
 .project-screenshot {
   display: block;
   width: 100%;
@@ -1436,6 +1515,7 @@ h3 {
   filter: saturate(0.94) contrast(1.04);
 }
 
+/* Shared SVG fills and strokes make the inline project drawings follow the active theme. */
 .svg-panel {
   fill: var(--panel);
   stroke: var(--ink);
@@ -1464,6 +1544,7 @@ h3 {
   stroke-width: 8;
 }
 
+/* Position the project year over the bottom-right of the poster. */
 .project-poster span {
   position: absolute;
   right: 14px;
@@ -1494,6 +1575,7 @@ h3 {
   line-height: 1.6;
 }
 
+/* Project achievements use cyan diamond bullets and readable spacing. */
 .project-highlights {
   display: grid;
   gap: 8px;
@@ -1522,6 +1604,7 @@ h3 {
   transform: translateY(-50%) rotate(45deg);
 }
 
+/* A thin separator distinguishes project technologies from their descriptive text. */
 .tech-stack {
   display: flex;
   flex-wrap: wrap;
@@ -1531,6 +1614,7 @@ h3 {
   border-top: 2px solid rgba(23, 21, 31, 0.14);
 }
 
+/* Reusable compact technology label; inline-flex aligns its optional icon with the text. */
 .tech-chip {
   display: inline-flex;
   min-height: 30px;
@@ -1548,6 +1632,7 @@ h3 {
   text-transform: uppercase;
 }
 
+/* Small SVG letter badges keep a fixed size even when the surrounding text wraps. */
 .tech-icon {
   width: 18px;
   height: 18px;
@@ -1568,6 +1653,7 @@ h3 {
   font-weight: 950;
 }
 
+/* Repository/live-project links use a raised-button style with a clear keyboard focus state. */
 .project-link {
   display: inline-flex;
   width: fit-content;
@@ -1619,6 +1705,7 @@ h3 {
   text-transform: uppercase;
 }
 
+/* Contact description and wrapping calls to action. */
 .contact-copy {
   max-width: 560px;
   margin: 24px 0 0;
@@ -1634,14 +1721,18 @@ h3 {
   margin-top: 28px;
 }
 
+/* A two-by-two contact-link grid creates a four-piece rounded panel. */
 .social-panel {
   display: grid;
+  /* Center the four-button group within its contact-section column at every screen size. */
+  justify-self: center;
   grid-template-columns: repeat(2, minmax(120px, 1fr));
   width: min(390px, 100%);
   min-height: 260px;
   gap: 10px;
 }
 
+/* Each social link has its own icon, texture, border, and interactive color treatment. */
 .social-card {
   position: relative;
   display: grid;
@@ -1670,6 +1761,7 @@ h3 {
     transform 160ms ease;
 }
 
+/* Decorative inner outline and diagonal stripe are separate from the clickable content. */
 .social-card::before {
   position: absolute;
   inset: 12px;
@@ -1693,6 +1785,7 @@ h3 {
   z-index: 1;
 }
 
+/* Icons inherit the link color, so hover/focus colors update both text and artwork. */
 .social-icon {
   position: relative;
   z-index: 1;
@@ -1719,6 +1812,7 @@ h3 {
   transform: rotate(-4deg) scale(1.08);
 }
 
+/* Different rounded corners make the four links read as one combined panel. */
 .social-linkedin {
   border-radius: 92px 6px 6px 6px;
 }
@@ -1780,6 +1874,7 @@ h3 {
   box-shadow: 1px 1px 0 var(--ink);
 }
 
+/* Allow credits, back-to-top link, and Easter egg to wrap without causing horizontal scrolling. */
 .site-footer {
   display: flex;
   flex-wrap: wrap;
@@ -1810,19 +1905,22 @@ h3 {
   outline: none;
 }
 
+/* Kitasan is the center of five tiles on desktop; narrower layouts keep her centered too. */
 .uma-secrets {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 280px));
+  grid-template-columns: repeat(5, minmax(0, 280px));
   justify-content: end;
   align-items: start;
   gap: clamp(8px, 3vw, 24px);
 }
 
+/* The native details element spans the footer and owns a single carrot trigger. */
 .uma-easter-egg {
   flex-basis: 100%;
   min-width: 0;
 }
 
+/* A 44px carrot target supports touch and keyboard; hide the browser’s default disclosure arrow. */
 .uma-easter-egg summary {
   display: grid;
   place-items: center;
@@ -1847,6 +1945,7 @@ h3 {
   outline-offset: 3px;
 }
 
+/* Center each character’s caption and image inside a bounded responsive tile. */
 .uma-surprise {
   width: min(100%, 280px);
   margin: 16px 0 8px auto;
@@ -1856,6 +1955,7 @@ h3 {
   letter-spacing: normal;
 }
 
+/* Playful caption styling is shared by all characters, with individual accent colors below. */
 .mambo-caption {
   color: var(--red);
   font-size: 1.8rem;
@@ -1863,6 +1963,7 @@ h3 {
   transform: rotate(-6deg);
 }
 
+/* The character image is a real button, enabling keyboard replay without extra visible controls. */
 .mambo-replay {
   display: block;
   width: 100%;
@@ -1880,12 +1981,14 @@ h3 {
   outline-offset: 4px;
 }
 
+/* A positioned wrapper anchors sparkles and remounts whenever the replay counter changes. */
 .mambo-performance {
   position: relative;
   display: block;
   padding: 12px 16px 0;
 }
 
+/* Decorative stars/music notes never intercept pointer input and disappear after their animation. */
 .mambo-sparkle {
   position: absolute;
   color: var(--cyan);
@@ -1897,28 +2000,32 @@ h3 {
 .sparkle-left { top: 28%; left: 0; }
 .sparkle-right { top: 12%; right: 0; color: var(--red); }
 
+/* A common image box aligns characters of different proportions; contain preserves the full artwork. */
 .mambo-character {
   display: block;
   width: 100%;
-  height: auto;
+  height: clamp(200px, 26vw, 340px);
+  object-fit: contain;
+  object-position: center bottom;
   margin-top: 16px;
   transform-origin: 50% 95%;
   filter: drop-shadow(0 6px 10px rgba(0, 0, 0, 0.18));
 }
 
-.uma-easter-egg[open] .mambo-character {
-  animation: mambo-dance 1800ms cubic-bezier(0.45, 0, 0.3, 1) both;
+/* Animate only the character whose audio is playing. Loop until playback ends, pauses, or closes. */
+.uma-easter-egg[open] .is-performing .mambo-character {
+  animation: mambo-dance 1800ms cubic-bezier(0.45, 0, 0.3, 1) infinite;
 }
 
-.uma-easter-egg[open] .mambo-caption {
+.uma-easter-egg[open] .is-performing .mambo-caption {
   animation: mambo-cheer 900ms ease-out both;
 }
 
-.uma-easter-egg[open] .mambo-sparkle {
-  animation: mambo-sparkle 900ms ease-out 2;
+.uma-easter-egg[open] .is-performing .mambo-sparkle {
+  animation: mambo-sparkle 900ms ease-out infinite;
 }
 
-.uma-easter-egg[open] .sparkle-right {
+.uma-easter-egg[open] .is-performing .sparkle-right {
   animation-delay: 200ms;
 }
 
@@ -1926,7 +2033,8 @@ h3 {
   color: var(--cyan);
 }
 
-.uma-easter-egg[open] .teio-easter-egg .mambo-character {
+/* Teio overrides the shared dance with a higher hopping step. */
+.uma-easter-egg[open] .teio-easter-egg.is-performing .mambo-character {
   animation-name: teio-step;
 }
 
@@ -1934,10 +2042,13 @@ h3 {
   color: var(--violet);
 }
 
-.uma-easter-egg[open] .opera-easter-egg .mambo-character {
-  animation: opera-encore 2200ms ease-in-out both;
+/* Opera O’s theatrical zoom and sway follow her singing playback. */
+.uma-easter-egg[open] .opera-easter-egg.is-performing .mambo-character {
+  /* Extend her theatrical sway to accompany the short song excerpt. */
+  animation: opera-encore 8000ms ease-in-out infinite;
 }
 
+/* Keyframes describe positions through one cycle; percentages are the elapsed fraction of its duration. */
 @keyframes opera-encore {
   0%, 100% { transform: translateY(0) rotate(0) scale(1); }
   15% { transform: translateY(-12px) rotate(-5deg) scale(1.04); }
@@ -1948,6 +2059,35 @@ h3 {
   90% { transform: translateY(3px) rotate(2deg) scale(1.02, 0.98); }
 }
 
+.doto-easter-egg .mambo-caption {
+  color: var(--violet);
+}
+
+.kitasan-easter-egg .mambo-caption {
+  color: var(--red);
+  font-size: 1.4rem;
+}
+
+/* Loop Kitasan’s upbeat bounce while her voice clip is playing. */
+.uma-easter-egg[open] .kitasan-easter-egg.is-performing .mambo-character {
+  animation: teio-step 1400ms ease-in-out infinite;
+}
+
+.uma-easter-egg[open] .doto-easter-egg.is-performing .mambo-character {
+  animation: doto-wobble 2400ms ease-in-out infinite;
+}
+
+/* Doto uses small hesitant sways and gentle hops, returning to the original pose at the end. */
+@keyframes doto-wobble {
+  0%, 100% { transform: translateY(0) rotate(0); }
+  16% { transform: translate(-4px, -5px) rotate(-5deg); }
+  32% { transform: translate(4px, 0) rotate(5deg); }
+  48% { transform: translate(-3px, -8px) rotate(-4deg); }
+  64% { transform: translate(3px, 1px) rotate(4deg); }
+  82% { transform: translateY(-4px) rotate(-2deg); }
+}
+
+/* Teio steps left/right, then lands after a higher final jump. */
 @keyframes teio-step {
   0%, 100% { transform: translateY(0) rotate(0) scale(1); }
   12% { transform: translateY(5px) scale(1.04, 0.95); }
@@ -1959,6 +2099,7 @@ h3 {
   92% { transform: translateY(3px) scale(1.04, 0.96); }
 }
 
+/* Mambo alternates hops and slight squash/stretch to make the static artwork feel lively. */
 @keyframes mambo-dance {
   0%, 100% { transform: translate(0, 0) rotate(0) scale(1); }
   10% { transform: translateY(4px) scale(1.03, 0.96); }
@@ -1971,28 +2112,34 @@ h3 {
   95% { transform: translateY(-3px) rotate(-1deg); }
 }
 
+/* The caption pops into view and settles at its resting tilt. */
 @keyframes mambo-cheer {
   0% { opacity: 0; transform: translateY(10px) rotate(-12deg) scale(0.7); }
   45% { opacity: 1; transform: translateY(-4px) rotate(4deg) scale(1.15); }
   100% { transform: rotate(-6deg) scale(1); }
 }
 
+/* Sparkles rise, rotate, and fade so they never stay visible after the dance. */
 @keyframes mambo-sparkle {
   0%, 100% { opacity: 0; transform: translateY(8px) scale(0.5) rotate(-15deg); }
   35% { opacity: 1; transform: translateY(-8px) scale(1.2) rotate(12deg); }
   75% { opacity: 0; transform: translateY(-24px) scale(0.8) rotate(25deg); }
 }
 
+/* Disable every character/caption/sparkle animation while retaining click-to-play sound. */
 @media (prefers-reduced-motion: reduce) {
-  .uma-easter-egg[open] .mambo-character,
-  .uma-easter-egg[open] .teio-easter-egg .mambo-character,
-  .uma-easter-egg[open] .opera-easter-egg .mambo-character,
-  .uma-easter-egg[open] .mambo-caption,
-  .uma-easter-egg[open] .mambo-sparkle {
+  .uma-easter-egg[open] .is-performing .mambo-character,
+  .uma-easter-egg[open] .teio-easter-egg.is-performing .mambo-character,
+  .uma-easter-egg[open] .opera-easter-egg.is-performing .mambo-character,
+  .uma-easter-egg[open] .doto-easter-egg.is-performing .mambo-character,
+  .uma-easter-egg[open] .kitasan-easter-egg.is-performing .mambo-character,
+  .uma-easter-egg[open] .is-performing .mambo-caption,
+  .uma-easter-egg[open] .is-performing .mambo-sparkle {
     animation: none;
   }
 }
 
+/* Let grid children shrink below their content width and wrap long words instead of overflowing. */
 .section,
 .section-heading,
 .project-card,
@@ -2006,6 +2153,7 @@ h3 {
   max-width: 100%;
 }
 
+/* Smaller desktop/tablet screens stack hero text above its artwork. */
 @media (max-width: 1100px) {
   .hero {
     grid-template-columns: 1fr;
@@ -2017,6 +2165,7 @@ h3 {
   }
 }
 
+/* Switch navigation to the mobile menu before desktop links run out of room. */
 @media (max-width: 1100px) {
   .topbar {
     display: grid;
@@ -2075,6 +2224,7 @@ h3 {
   }
 }
 
+/* Tablet course cards use two columns; center the third card across the final row. */
 @media (min-width: 641px) and (max-width: 900px) {
   .badge-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -2087,7 +2237,23 @@ h3 {
   }
 }
 
+/* Tablet layout: two character columns, stacked content panels, and a timeline along the left edge. */
 @media (max-width: 900px) {
+  /* Center the characters on phones and tablets; the carrot stays aligned right. */
+  .uma-secrets {
+    grid-template-columns: repeat(2, minmax(0, 280px));
+    justify-content: center;
+    justify-items: center;
+  }
+
+  /* Keep Kitasan between the two pairs, rather than leaving a fifth tile on one side. */
+  .kitasan-easter-egg {
+    grid-column: 1 / -1;
+  }
+
+  .uma-surprise {
+    margin: 16px auto 8px;
+  }
 
   .split,
   .experience-card,
@@ -2150,6 +2316,7 @@ h3 {
   }
 }
 
+/* Phone layout: stack characters and badges, tighten the timeline, and use full-width action buttons. */
 @media (max-width: 640px) {
   .uma-secrets {
     grid-template-columns: minmax(0, 280px);

@@ -1,5 +1,7 @@
+/* Tailwind supplies the base reset and utilities; App.css holds component visuals. */
 @import 'tailwindcss';
 
+/* Default light-theme tokens. Components read these values with var(--name). */
 :root {
   --paper: #f7f4ec;
   --ink: #17151f;
@@ -9,21 +11,25 @@
   --violet: #6e5cff;
   --soft: #fffaf0;
   --panel: #ffffff;
+  /* Translucent rules and background textures complement the solid colors above. */
   --rule: rgba(23, 21, 31, 0.16);
   --page-dot: rgba(23, 21, 31, 0.09);
   --page-wash: rgba(69, 199, 216, 0.1);
   --panel-wash: rgba(255, 255, 255, 0.58);
+  /* Prefer Inter if installed, then use the visitor's platform UI fonts. */
   font-family:
     Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     'Segoe UI', sans-serif;
   color: var(--ink);
   background: var(--paper);
+  /* Keep font rendering crisp without synthetic bold or italic faces. */
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* App.tsx sets data-theme on <html>; overriding tokens recolors every component. */
 :root[data-theme='dark'] {
   --paper: #111018;
   --ink: #f6f1e8;
@@ -37,17 +43,21 @@
   --page-dot: rgba(246, 241, 232, 0.08);
   --page-wash: rgba(255, 95, 122, 0.12);
   --panel-wash: rgba(24, 22, 32, 0.72);
+  /* Ask the browser to render its native controls in dark mode too. */
   color-scheme: dark;
 }
 
+/* Include borders and padding in declared sizes to make layouts predictable. */
 * {
   box-sizing: border-box;
 }
 
+/* Smooth ordinary in-page anchor navigation. */
 html {
   scroll-behavior: smooth;
 }
 
+/* Support screens from 320px wide and draw the repeating dotted-paper background. */
 body {
   min-width: 320px;
   margin: 0;
@@ -60,7 +70,9 @@ body {
     100% 100%;
 }
 
+/* Prevent browser default control fonts from differing from surrounding text. */
 button,
+/* Links inherit surrounding colors; App.css defines hover/focus treatments. */
 a {
   font: inherit;
 }
