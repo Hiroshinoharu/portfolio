@@ -1,10 +1,43 @@
-import { useEffect, useState, type MouseEvent } from 'react'
+import { useEffect, useRef, useState, type MouseEvent, type RefObject } from 'react'
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
 import './App.css'
 import gameCheckScreenshot from './assets/gamecheck-screenshot.jpg'
 import githubPfp from './assets/github-pfp-small.png'
 import maxPhoto from './assets/max.jpeg'
 import nextPlayScreenshot from './assets/nextplay-screenshot.jpg'
+import ccnaIntroduction from './assets/ccna-introduction-to-networks.jpeg'
+import ccnaSwitching from './assets/ccna-switching-routing-wireless.jpeg'
+import ccnaEnterprise from './assets/ccna-enterprise-networking.jpeg'
+import mamboImage from './assets/mambo.png'
+import mamboSound from './assets/mambo.mp3'
+import teioImage from './assets/tokai-teio.png'
+import teioSound from './assets/tokai-teio.mp3'
+import operaImage from './assets/tm-opera-o.png'
+import operaSound from './assets/tm-opera-o.mp3'
+
+const networkingBadges = [
+  {
+    level: 'CCNA 1',
+    title: 'Introduction to Networks',
+    image: ccnaIntroduction,
+    description: 'A foundation in how networks connect devices and move data, covering network protocols, IP addressing, and basic router and switch configuration.',
+    skills: ['Network fundamentals', 'IP addressing', 'Device configuration'],
+  },
+  {
+    level: 'CCNA 2',
+    title: 'Switching, Routing & Wireless Essentials',
+    image: ccnaSwitching,
+    description: 'Switching and routing concepts for small and medium networks, with wireless LAN configuration, network troubleshooting, and LAN security fundamentals.',
+    skills: ['Switching & routing', 'Wireless LANs', 'Troubleshooting'],
+  },
+  {
+    level: 'CCNA 3',
+    title: 'Enterprise Networking, Security & Automation',
+    image: ccnaEnterprise,
+    description: 'Enterprise networking concepts that connect infrastructure with security and automation, building an understanding of larger networks and how they are managed.',
+    skills: ['Enterprise networks', 'Network security', 'Automation concepts'],
+  },
+]
 
 // Main portfolio cards. The UI renders these into the Selected Work section.
 const projects = [
@@ -269,6 +302,7 @@ const socials = [
 const navLinks = [
   { href: '#top', label: 'Home' },
   { href: '#about', label: 'About' },
+  { href: '#experience', label: 'Experience' },
   { href: '#featured', label: 'Featured' },
   { href: '#journey', label: 'Journey' },
   { href: '#stack', label: 'Stack' },
@@ -297,7 +331,62 @@ const stagger = {
   },
 }
 
+function CharacterSurprise({ name, caption, image, sound, width, height, variant, activeAudio }: {
+  readonly name: string
+  readonly caption: string
+  readonly image: string
+  readonly sound: string
+  readonly width: number
+  readonly height: number
+  readonly variant: 'mambo' | 'teio' | 'opera'
+  readonly activeAudio: RefObject<HTMLAudioElement | null>
+}) {
+  const audioRef = useRef<HTMLAudioElement>(null)
+  const [take, setTake] = useState(0)
+  const [soundError, setSoundError] = useState(false)
+  const play = () => {
+    setTake((value) => value + 1)
+    const audio = audioRef.current
+    if (!audio) return
+    if (activeAudio.current && activeAudio.current !== audio) {
+      activeAudio.current.pause()
+      activeAudio.current.currentTime = 0
+    }
+    activeAudio.current = audio
+    audio.pause()
+    audio.currentTime = 0
+    audio.volume = 0.5
+    setSoundError(false)
+    void audio.play().catch((error: unknown) => {
+      // Closing or switching characters can deliberately interrupt a pending play.
+      if (!(error instanceof DOMException && error.name === 'AbortError')) setSoundError(true)
+    })
+  }
+
+  return (
+      <div className={`uma-surprise ${variant}-easter-egg`}>
+        <p className="mambo-caption" key={`caption-${take}`}>{caption}</p>
+        <button className="mambo-replay" type="button" onClick={play} aria-label={`Replay ${name} dance and sound`} title={`${caption} Again!`}>
+          <span className="mambo-performance" key={take}>
+            <img className="mambo-character" src={image} alt={`${name} striking a cheerful pose`} width={width} height={height} loading="lazy" />
+            <span className="mambo-sparkle sparkle-left" aria-hidden="true">✦</span>
+            <span className="mambo-sparkle sparkle-right" aria-hidden="true">♪</span>
+          </span>
+        </button>
+        <audio ref={audioRef} src={sound} preload="none" />
+        {soundError && <p role="status">Sound couldn’t play. Tap her to retry.</p>}
+      </div>
+  )
+}
+
 function App() {
+  const activeCharacterAudio = useRef<HTMLAudioElement>(null)
+  const stopCharacterAudio = () => {
+    if (activeCharacterAudio.current) {
+      activeCharacterAudio.current.pause()
+      activeCharacterAudio.current.currentTime = 0
+    }
+  }
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [activeSection, setActiveSection] = useState(navLinks[0].href)
@@ -569,6 +658,54 @@ function App() {
       </motion.section>
 
       <motion.section
+        className="section experience-section"
+        id="experience"
+        aria-labelledby="experience-heading"
+        initial={reduceMotion ? false : 'hidden'}
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.16 }}
+        variants={stagger}
+      >
+        <motion.div className="section-heading" variants={reveal} transition={revealTransition}>
+          <p className="eyebrow">Work Experience</p>
+          <h2 id="experience-heading">Turning data into practical tools for local government.</h2>
+        </motion.div>
+
+        <motion.article className="experience-card" variants={reveal} transition={revealTransition}>
+          <div className="experience-overview">
+            <div className="featured-meta">
+              <span>Tech internship</span>
+              <span>Jan – Aug 2025</span>
+            </div>
+            <h3>Data Analyst Intern</h3>
+            <p className="experience-employer">Dublin City Council</p>
+            <p className="experience-summary">
+              Combined Python development, data analysis, and workflow automation to support reporting and dataset publishing.
+            </p>
+            <dl className="experience-impact">
+              <div><dt>10+</dt><dd>Power BI dashboards delivered</dd></div>
+              <div><dt>20+</dt><dd>Stakeholders worked with</dd></div>
+            </dl>
+            <div className="tech-stack" aria-label="Internship technologies">
+              {['Python', 'Power BI', 'ETL', 'CKAN API'].map((tech) => (
+                <span className="tech-chip" key={tech}>{tech}</span>
+              ))}
+            </div>
+          </div>
+          <div className="experience-details">
+            <h4>What I worked on</h4>
+            <ul className="featured-list">
+              <li>Built Python data pipelines to clean and prepare datasets for reporting and publishing.</li>
+              <li>Delivered 10+ Power BI dashboards and worked with 20+ stakeholders across the council.</li>
+              <li>Automated data scraping and CKAN API uploads for repeatable dataset publishing.</li>
+              <li>Scheduled publishing workflows through a Windows service.</li>
+            </ul>
+            <p className="project-note">Internship project repositories are unavailable due to confidentiality.</p>
+          </div>
+        </motion.article>
+      </motion.section>
+
+      <motion.section
         className="section featured-project"
         id="featured"
         initial={reduceMotion ? false : 'hidden'}
@@ -661,6 +798,31 @@ function App() {
               </div>
             </motion.article>
           ))}
+        </div>
+        <div className="networking-badges" aria-labelledby="networking-heading">
+          <motion.div className="section-heading" variants={reveal} transition={revealTransition}>
+            <p className="eyebrow">Cisco Networking Academy</p>
+            <h3 id="networking-heading">A foundation in networking, security, and automation.</h3>
+            <p className="badge-intro">
+              I completed the three CCNA courses as part of my infrastructure studies. These course badges reflect the networking knowledge behind my interest in software, data, and the systems they run on.
+            </p>
+          </motion.div>
+          <div className="badge-grid">
+            {networkingBadges.map((badge) => (
+              <motion.article className="badge-card" key={badge.level} variants={reveal} transition={revealTransition}>
+                <a className="badge-image-link" href={badge.image} target="_blank" rel="noreferrer" aria-label={`View ${badge.level}: ${badge.title} course badge (opens in a new tab)`}>
+                  <img src={badge.image} alt={`Cisco Networking Academy verified course badge: CCNA: ${badge.title}`} width="480" height="480" loading="lazy" />
+                </a>
+                <p className="eyebrow">{badge.level} · Course badge</p>
+                <h4>{badge.title}</h4>
+                <p className="badge-description">{badge.description}</p>
+                <ul className="badge-skills" aria-label={`${badge.level} topics`}>
+                  {badge.skills.map((skill) => <li className="tech-chip" key={skill}>{skill}</li>)}
+                </ul>
+              </motion.article>
+            ))}
+          </div>
+          <a className="project-link badge-source" href="https://www.netacad.com/sites/default/files/course-catalog.pdf" target="_blank" rel="noreferrer">Explore the Cisco Networking Academy curriculum ↗</a>
         </div>
       </motion.section>
 
@@ -825,6 +987,16 @@ function App() {
         <p>Max Ceban © 2026</p>
         <p>Built with React, Vite, TypeScript, and Motion.</p>
         <a href="#top">Back to top</a>
+        <details className="uma-easter-egg" onToggle={(event) => {
+          if (!event.currentTarget.open) stopCharacterAudio()
+        }}>
+          <summary aria-label="A little carrot surprise" title="A little carrot surprise" onClick={stopCharacterAudio}>🥕</summary>
+          <div className="uma-secrets">
+            <CharacterSurprise name="Mambo" caption="Mambo!" image={mamboImage} sound={mamboSound} width={1125} height={1640} variant="mambo" activeAudio={activeCharacterAudio} />
+            <CharacterSurprise name="Tokai Teio" caption="Hachimi!" image={teioImage} sound={teioSound} width={340} height={438} variant="teio" activeAudio={activeCharacterAudio} />
+            <CharacterSurprise name="T.M. Opera O" caption="Ha-ha-ha!" image={operaImage} sound={operaSound} width={1125} height={1613} variant="opera" activeAudio={activeCharacterAudio} />
+          </div>
+        </details>
       </footer>
     </motion.main>
   )

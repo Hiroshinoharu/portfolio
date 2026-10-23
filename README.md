@@ -76,6 +76,10 @@ The about section includes:
 - real portrait image from `src/assets/max.jpeg`
 - framed image styling with a subtle screen-tone overlay
 
+### Work Experience
+
+The dedicated Experience section highlights the Data Analyst internship at Dublin City Council (January–August 2025), including Python pipelines, Power BI dashboards, stakeholder collaboration, and CKAN publishing automation. It includes technology badges and a confidentiality note, with a direct link from desktop and mobile navigation.
+
 ### Featured Project
 
 The featured project section highlights NextPlay as the main case study.
@@ -98,6 +102,8 @@ It presents:
 - work experience
 - leadership
 - certifications and continued learning
+
+The Journey section also displays the three Cisco Networking Academy CCNA course badges, with course summaries and topics. Badge images open at full size. These are presented as course badges rather than a claim of CCNA exam certification.
 
 ### Tech Stack
 
@@ -161,6 +167,12 @@ Theme state is stored in `localStorage` using the `portfolio-theme` key.
 ### Footer and Sharing
 
 The footer includes a short build credit and back-to-top link.
+
+A single carrot in the footer reveals Mambo, Tokai Teio, and T.M. Opera O using the supplied character images. Tap any character to play her voice clip and animation. Closing the shared disclosure stops the sound. Voices do not overlap, animations respect reduced-motion preferences, and the layout stacks on phones.
+
+Voice clip source: [Mambo on Myinstants](https://www.myinstants.com/en/instant/mamboman-bo-shi-ge-ju-matikanetannhauser-9173/), stored locally as `src/assets/mambo.mp3`.
+
+Tokai Teio uses a hopping animation and a [short Hachimi voice clip](https://www.myinstants.com/en/instant/tokai-teio-hachimi-short-11583/), stored as `src/assets/tokai-teio.mp3`. T.M. Opera O uses a theatrical animation and a [short laugh clip](https://www.myinstants.com/en/instant/tm-opera-on-laugh-uma-musume-pretty-derby-31063/), stored as `src/assets/tm-opera-o.mp3`.
 
 Social sharing metadata lives in `index.html`, and the Open Graph preview image is:
 
