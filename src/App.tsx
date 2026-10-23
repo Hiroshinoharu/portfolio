@@ -331,7 +331,7 @@ const stagger = {
   },
 }
 
-function CharacterSurprise({ name, caption, image, sound, width, height, variant, activeAudio }: {
+function CharacterSurprise({ name, caption, image, sound, width, height, variant, activeAudioRef }: {
   readonly name: string
   readonly caption: string
   readonly image: string
@@ -339,7 +339,7 @@ function CharacterSurprise({ name, caption, image, sound, width, height, variant
   readonly width: number
   readonly height: number
   readonly variant: 'mambo' | 'teio' | 'opera'
-  readonly activeAudio: RefObject<HTMLAudioElement | null>
+  readonly activeAudioRef: RefObject<HTMLAudioElement | null>
 }) {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [take, setTake] = useState(0)
@@ -348,11 +348,11 @@ function CharacterSurprise({ name, caption, image, sound, width, height, variant
     setTake((value) => value + 1)
     const audio = audioRef.current
     if (!audio) return
-    if (activeAudio.current && activeAudio.current !== audio) {
-      activeAudio.current.pause()
-      activeAudio.current.currentTime = 0
+    if (activeAudioRef.current && activeAudioRef.current !== audio) {
+      activeAudioRef.current.pause()
+      activeAudioRef.current.currentTime = 0
     }
-    activeAudio.current = audio
+    activeAudioRef.current = audio
     audio.pause()
     audio.currentTime = 0
     audio.volume = 0.5
@@ -992,9 +992,9 @@ function App() {
         }}>
           <summary aria-label="A little carrot surprise" title="A little carrot surprise" onClick={stopCharacterAudio}>🥕</summary>
           <div className="uma-secrets">
-            <CharacterSurprise name="Mambo" caption="Mambo!" image={mamboImage} sound={mamboSound} width={1125} height={1640} variant="mambo" activeAudio={activeCharacterAudio} />
-            <CharacterSurprise name="Tokai Teio" caption="Hachimi!" image={teioImage} sound={teioSound} width={340} height={438} variant="teio" activeAudio={activeCharacterAudio} />
-            <CharacterSurprise name="T.M. Opera O" caption="Ha-ha-ha!" image={operaImage} sound={operaSound} width={1125} height={1613} variant="opera" activeAudio={activeCharacterAudio} />
+            <CharacterSurprise name="Mambo" caption="Mambo!" image={mamboImage} sound={mamboSound} width={1125} height={1640} variant="mambo" activeAudioRef={activeCharacterAudio} />
+            <CharacterSurprise name="Tokai Teio" caption="Hachimi!" image={teioImage} sound={teioSound} width={340} height={438} variant="teio" activeAudioRef={activeCharacterAudio} />
+            <CharacterSurprise name="T.M. Opera O" caption="Ha-ha-ha!" image={operaImage} sound={operaSound} width={1125} height={1613} variant="opera" activeAudioRef={activeCharacterAudio} />
           </div>
         </details>
       </footer>
